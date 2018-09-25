@@ -1,0 +1,114 @@
+global class SalesOrderPushToNav {
+    
+    public string CustomerName { get; set; }
+    public string currencyISO_Code { get; set; }
+    public string BillingStreet { get; set; }
+    public string BillingCity { get; set; }
+    public string BillingState { get; set; }
+    public string BillingCountry { get; set; }
+    public string BillingPostalCode { get; set; }
+    public string Phone { get; set; }
+    public string Fax { get; set; }
+    public string AR { get; set; }
+    public string Account_Billing_Contact_Email { get; set; }
+    public string Account_Billing_Contact_Name { get; set; }
+    public string AccountMSNAV_Id { get; set; }
+    public string AccountSF_Id { get; set; }
+    public string AccountMSNAV_Company { get; set; }
+    public string Gen_Bus_Posting_Group { get; set; }
+    public string vatBusPostingGroup { get; set; }
+    public string Payment_Terms   { get; set; } 
+    public string Payment_Type { get; set; }
+    public Boolean Opportunty_Tax_Exempt {get;set;}
+    public Boolean Account_Tax_Exempt {get;set;}
+    //===============
+    
+    public string Location_Code { get; set; }
+    public string Name { get; set; }
+    public string Bill_To_Street { get; set; }
+    public string Bill_To_Street_2 { get; set; }
+    public string Bill_To_City { get; set; }
+    public string Bill_To_State { get; set; }
+    public string Bill_To_Zip_Code { get; set; }
+    public string Bill_To_Contact_Name { get; set; }
+    public string Delivery_Company { get; set; }
+    public String Bill_To_Company_Name{get; set;}
+    public string Delivery_Street { get; set; }
+    public string Delivery_Street_2 { get; set; }
+    public string Delivery_City { get; set; }
+    public string Delivery_State { get; set; }
+    public string Delivery_Zip_Code { get; set; }
+    public string Delivery_Contact_Name { get; set; }
+    public DateTime  Ship_Date { get; set; }
+    public string  Ship_time { get; set; }
+    public string Quote_Number { get; set; }
+    public string Salesperson_Code { get; set; }
+    public Boolean Rental_Order { get; set; }
+    public string Additional_Instructions { get; set; }
+    public string Terms { get; set; }
+    public string PO_Number { get; set; }
+    public DateTime Need_Date { get; set; }
+    
+    public Boolean GSA_Order { get; set; }
+    Public Boolean Sample_Order {get; set;}
+    Public Boolean IPP_WAWF {get;set;}
+    Public Boolean Ship_Early {get;set;}
+    
+    public Decimal Total_Tax { get; set; }
+    public Decimal CASTEW_Total { get; set; }
+    public string Ship_Via_Picklist { get; set; }
+    public string Delivery_Contact_Phone { get; set; }
+    //// new field added on 10-1-18
+    public string Delivery_Country { get; set; }
+    public string Bill_To_Contact_Phone { get; set; }
+    public string Delivery_Option { get; set; }
+    public string Hide_Unit_Price_on_Invoice { get; set; }
+    public string ClosedWon { get; set; }
+    public string MSNAV_Id { get; set; }
+    public string MSNAV_Company { get; set; }
+    public string MSNAV_Error { get; set; }
+    public Boolean SSGInstall { get; set; }
+    public string Tax_Area_Code { get; set; }
+	public string Ship_Via { get; set; }
+    
+    //// new field added on 25-04-18 
+    public Boolean GSA { get; set; }
+    
+    public string Pickup_Type { get; set; }
+    //// new BMSfield added on 15-1-18
+    public string OppId { get; set; }
+    public Boolean IsTemporary { get; set; }
+    //// new BMSfield added on 09-02-18
+    public Date Planned_Ship_Date { get; set; }
+    public Date Requested_Ship_Date { get; set; }
+    public Decimal Tax_Amt { get; set; }
+    public Decimal Shipping_Charge { get; set; }
+    //=====================
+    //// new account field on 2/2/18
+    public string Customer_Channel_Code { get; set; }
+    ///// added freight on 22/02/18
+    public boolean Property_Type_Business { get; set; }
+    public boolean Property_Type_Residential { get; set; }
+    public boolean Limited_Access { get; set; }
+    public string What_are_the_hours_of_operation { get; set; }
+    public boolean Advanced_Delivery { get; set; }
+    public string What_delivery_notice_is_required { get; set; }
+    public boolean Loading_Dock { get; set; }
+    public boolean Lift_Gate_Required { get; set; }
+    
+    public List<SalesOrderLine> salesOrderLineList { get; set; }
+    
+    //// add Comments (03/29/2018)
+   // Public List<SalesOrderComment> SalesOrdercommentList { get; set; }
+    //------------------add field (05/15/2018)
+    public Boolean SampleOrder { get; set; }
+    
+    //---------------------add field(05/22/2018)
+   // public Boolean IPP_WAWF { get; set; }
+    
+    
+    //global Account ownerAccount{set;get;}
+    //global List<Opportunity> updatedOpportunity{set;get;}
+    //global List<OpportunityLineItem> productListItems{set;get;}
+
+}
