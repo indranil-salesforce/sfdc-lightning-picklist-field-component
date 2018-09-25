@@ -1,0 +1,67 @@
+@RestResource(urlMapping='/v1/SignHubResponse/*')
+global with sharing class SignHubResponseApi {
+    
+    @HttpPost
+    global static Response doPost() {
+        
+        Response response=new Response();
+        try{
+             
+           SignHubResponseDetail inv = (SignHubResponseDetail)JSON.deserializeStrict(RestContext.request.requestBody.toString(),SignHubResponseDetail.class);
+            //String Document_id=String.valueOf(RestContext.request.params.get('Document_id'));
+            //String Status=String.valueOf(RestContext.request.params.get('Status'));
+            System.debug('<----------<>'+inv);
+            List<Opportunity> fetchedData=[SELECT Id,SignHubDocId__c,Account.Terms__c,E_Signature_Link__c,Is_Quote_Signed__c,SignHubPackageId__c,Terms__c,Generate__c,StageName FROM Opportunity  Where SignHubPackageId__c =:inv.Package_id ];
+            System.debug('<----------<>'+fetchedData);
+               if(fetchedData.size() > 0 )
+                  // if(fetchedData.get(0).SignHubPackageId__c != null || fetchedData.get(0).SignHubPackageId__c != '')
+                {
+                    fetchedData.get(0).Is_Quote_Signed__c = true;
+                    fetchedData.get(0).E_Signature_Link__c = 'Quote Signed';
+                    system.debug('<------+++++++++----<>'+fetchedData);
+                    update fetchedData;
+                   /* if(fetchedData.get(0).Account.Terms__c == 'PREPAID')
+                    {
+                        system.debug('<---->StageName');
+                        fetchedData.get(0).StageName = 'Accepted';
+                        update fetchedData;
+                    }*/
+                    
+                    //PaymentOppController.SendPaymentMail();
+                    /*
+                    Attachment attachment = new Attachment();
+                    attachment.OwnerId = UserInfo.getUserId();
+            		attachment.ParentId = fetchedData.get(0).Id; // the record the file is attached to
+            		attachment.IsPrivate = true;
+                    attachment.name = 'TestPdf';
+                    attachment.ContentType = 'application/pdf';
+					attachment.body = blob.toPDF(inv.Document_body); 
+                    try {
+                        insert attachment;
+                       
+            		} catch (DMLException e) {
+                	
+                
+            		}
+                    */
+                    String Doc_id = fetchedData.get(0).SignHubDocId__c;               
+                    response.status=True;
+            		response.message=Doc_id;
+            }
+            else if(fetchedData.size() <= 0 )
+            {
+                response.status=False;
+            	response.message='Update Not Successfull';
+            }
+
+        }
+        catch(Exception e)
+        {
+            response.status=False;
+            response.message='Update Not Successfull';
+        }
+        return response;
+   
+    }   
+    
+}
