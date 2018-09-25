@@ -1,0 +1,21 @@
+public class SalesOrderLine {
+    
+    public Id SF_Id{ get; set; }
+    public Decimal ORDER { get; set; }
+    public string Item { get; set; }
+    public decimal MSNAV_Line_No{ get; set; }
+    public string ProductMSNAV_Id { get; set; } 
+    public decimal Quantity { get; set; }
+    public decimal Unit_Price { get; set; }
+    public string Description { get; set; }
+    public decimal UnitPrice { get; set; }
+    public string Additional_Information { get; set; }
+    public Boolean Tax_Exempt { get; set; }
+    public string Additional_Instructions { get; set; }
+    public string L_W { get; set; }
+    public string U_M { get; set; }
+    
+    /// new field
+    public string Item_Location_Code { get; set; }
+    
+}
