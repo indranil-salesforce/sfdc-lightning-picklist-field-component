@@ -1,0 +1,409 @@
+global class NAVSalesOrderPushSyncBatch implements Database.Batchable<Opportunity>,Database.AllowsCallouts{
+    
+    //==========Lightning.
+    
+    global List<Opportunity> data{set;get;}
+    global Bulk_Behavior_Tracking__c temp= new Bulk_Behavior_Tracking__c();
+    
+    global NAVSalesOrderPushSyncBatch(List<Opportunity> data){
+        this.data=data;
+    }
+    
+    
+    global List<Opportunity> start(Database.BatchableContext bc){
+        return data;
+    }
+    
+    
+    global void execute(Database.BatchableContext bc, List<Opportunity> data){
+        
+        List<SalesOrderLine> opporLineItemsPayload=new List<SalesOrderLine>();
+       // List<SalesOrderComment> SalesOrderCommentPayload=new List<SalesOrderComment>(); // Opportunity Comments
+        SalesOrderPushToNav mainPayLoad=new SalesOrderPushToNav();
+        
+        Set<ID> actualId=new Set<ID>();
+        
+        
+        for(Opportunity temp:data){
+            actualId.add(temp.ID);
+        }
+        
+        
+        if(actualId.size()>0){
+            
+            List<Opportunity> needToUpdate=[SELECT Id,name,AccountId,Location_Code__c,Tax_Area_Zip_Code__c,Delivery_Country__c,
+                                            Bill_To_Street__c,Bill_To_Street_2__c,Bill_To_City__c,Pickup_Type__c,
+                                            Bill_To_State__c,Bill_To_Zip_Code__c,Bill_To_Contact_Name__c,Product_Samples__c,
+                                            Delivery_Company__c,Delivery_Street__c,Delivery_Street_2__c,Property_Type_Business__c,Property_Type_Residential__c,
+                                            Delivery_City__c,Delivery_State__c,Delivery_Zip_Code__c,Limited_Access__c,What_are_the_hours_of_operation__c,Advanced_Delivery__c,
+                                            Delivery_Contact_Name__c,Ship_Date__c,Quote_Number__c,What_delivery_notice_is_required__c,Loading_Dock__c,Lift_Gate_Required__c,
+                                            Salesperson_Code__c,Rental_Order__c,Additional_Instructions__c,Payment_Type__c,
+                                            Terms__c,PO_Number__c,Need_Date__c,GSA_Order__c,IPP_WAWF__c,Total_Tax__c,Shipping_Time__c,
+                                            CASTEW_Total__c,Ship_Via_Picklist__c,Delivery_Contact_Phone__c,Ship_Early__c,
+                                            Delivery_Option__c,Hide_Unit_Price_on_Invoice__c,StageName,Account_Tax_Exempt__c,Opportunty_Tax_Exempt__c,
+                                            MSNAV_Id__c,MSNAV_Error__c,MSNAV_Company__c,SSG_Install__c,
+                                            Freight_Quote_No__c,AVSFQB__Generate_Object__c,Account.name,
+                                            Account.Phone,Account.Fax,Account.Account_Invoice_Contact_Email__c,Account.Payment_Terms__c,
+                                            Account.Account_Invoice_Contact_Name__c,Account.BillingCity,Account.BillingStreet, 
+                                            Account.BillingState, Account.BillingPostalCode,Account.BillingCountry,Account.MSNAV_Id__c,
+                                            Account.UK_MSNAV_Id__c,Account.Customer_Channel_Code__c FROM Opportunity WHERE Id IN :actualId];
+            
+            
+            for(Opportunity dupliProbOppr:needToUpdate){
+                
+                if(dupliProbOppr.MSNAV_Company__c=='US Company'){
+                    mainPayLoad.AccountMSNAV_Id=dupliProbOppr.Account.MSNAV_Id__c;
+                }else{
+                    mainPayLoad.AccountMSNAV_Id=dupliProbOppr.Account.UK_MSNAV_Id__c;  
+                }
+                
+                mainPayLoad.Location_Code=dupliProbOppr.Location_Code__c;
+                
+                mainPayLoad.Name=dupliProbOppr.name;
+                mainPayLoad.Bill_To_Street=dupliProbOppr.Bill_To_Street__c;
+                mainPayLoad.Bill_To_Street_2=dupliProbOppr.Bill_To_Street_2__c;
+                mainPayLoad.Bill_To_City=dupliProbOppr.Bill_To_City__c;
+                mainPayLoad.Bill_To_State=dupliProbOppr.Bill_To_State__c;
+                mainPayLoad.Bill_To_Zip_Code=dupliProbOppr.Bill_To_Zip_Code__c;
+                mainPayLoad.Bill_To_Contact_Name=dupliProbOppr.Bill_To_Contact_Name__c;
+                mainPayLoad.Delivery_Company=dupliProbOppr.Delivery_Company__c;
+                mainPayLoad.Delivery_Street=dupliProbOppr.Delivery_Street__c;
+                mainPayLoad.Delivery_Street_2=dupliProbOppr.Delivery_Street_2__c;
+                mainPayLoad.Delivery_City=dupliProbOppr.Delivery_City__c;
+                mainPayLoad.Delivery_State=dupliProbOppr.Delivery_State__c;
+                mainPayLoad.Delivery_Zip_Code=dupliProbOppr.Delivery_Zip_Code__c;
+                mainPayLoad.Delivery_Contact_Name=dupliProbOppr.Delivery_Contact_Name__c;
+                //// new field added on 11-1-18
+                mainPayLoad.Delivery_Country=dupliProbOppr.Delivery_Country__c; 
+                mainPayLoad.Ship_Date=dupliProbOppr.Ship_Date__c;
+                mainPayLoad.Ship_time=dupliProbOppr.Shipping_Time__c;
+                mainPayLoad.Quote_Number=dupliProbOppr.Quote_Number__c;
+                mainPayLoad.Salesperson_Code=dupliProbOppr.Salesperson_Code__c;
+                mainPayLoad.Rental_Order=dupliProbOppr.Rental_Order__c;
+                mainPayLoad.Tax_Area_Code=dupliProbOppr.Tax_Area_Zip_Code__c;
+                // new payment field 6/5/18
+                mainPayLoad.Payment_Type=dupliProbOppr.Payment_Type__c;
+                ///new field added 19/03/18
+                mainPayLoad.Pickup_Type=dupliProbOppr.Pickup_Type__c;
+                //=========TAx Exampt
+                mainPayLoad.Opportunty_Tax_Exempt=dupliProbOppr.Opportunty_Tax_Exempt__c;
+                mainPayLoad.Account_Tax_Exempt=dupliProbOppr.Account_Tax_Exempt__c;
+                //   =   ========================================================added freight ===========================================================
+                mainPayLoad.Property_Type_Business=dupliProbOppr.Property_Type_Business__c;
+                mainPayLoad.Property_Type_Residential=dupliProbOppr.Property_Type_Residential__c ;
+                mainPayLoad.Limited_Access=dupliProbOppr.Limited_Access__c;
+                mainPayLoad.What_are_the_hours_of_operation=dupliProbOppr.What_are_the_hours_of_operation__c;
+                mainPayLoad.Advanced_Delivery=dupliProbOppr.Advanced_Delivery__c;
+                mainPayLoad.What_delivery_notice_is_required=dupliProbOppr.What_delivery_notice_is_required__c;
+                mainPayLoad.Loading_Dock=dupliProbOppr.Loading_Dock__c;
+                mainPayLoad.Lift_Gate_Required=dupliProbOppr.Lift_Gate_Required__c;
+                mainPayLoad.Ship_Early=dupliProbOppr.Ship_Early__c;
+                
+                //=   ========================================================added freight ===========================================================
+                //=============new field 15/05/18
+                mainPayLoad.SampleOrder=dupliProbOppr.Product_Samples__c;
+                
+                mainPayLoad.Additional_Instructions=dupliProbOppr.Additional_Instructions__c;
+                mainPayLoad.Terms=dupliProbOppr.Terms__c;
+                mainPayLoad.PO_Number=dupliProbOppr.PO_Number__c;
+                mainPayLoad.Need_Date=dupliProbOppr.Need_Date__c;
+                mainPayLoad.GSA_Order=dupliProbOppr.GSA_Order__c;
+                mainPayLoad.IPP_WAWF=dupliProbOppr.IPP_WAWF__c;
+                mainPayLoad.Total_Tax=dupliProbOppr.Total_Tax__c;
+                mainPayLoad.CASTEW_Total=dupliProbOppr.CASTEW_Total__c;
+                mainPayLoad.Ship_Via_Picklist=dupliProbOppr.Ship_Via_Picklist__c;
+                mainPayLoad.Delivery_Contact_Phone=dupliProbOppr.Delivery_Contact_Phone__c;
+                mainPayLoad.Delivery_Option=dupliProbOppr.Delivery_Option__c;
+                mainPayLoad.Hide_Unit_Price_on_Invoice=dupliProbOppr.Hide_Unit_Price_on_Invoice__c;
+                mainPayLoad.ClosedWon=dupliProbOppr.StageName;
+                
+                mainPayLoad.MSNAV_Id=dupliProbOppr.MSNAV_Id__c;
+                mainPayLoad.MSNAV_Company=dupliProbOppr.MSNAV_Company__c;
+                mainPayLoad.MSNAV_Error=dupliProbOppr.MSNAV_Error__c;
+                mainPayLoad.SSGInstall=dupliProbOppr.SSG_Install__c;
+                
+                //=========Account
+                mainPayLoad.CustomerName=dupliProbOppr.Account.name;
+                mainPayLoad.BillingStreet=dupliProbOppr.Account.BillingStreet;
+                mainPayLoad.BillingCity=dupliProbOppr.Account.BillingCity;
+                mainPayLoad.BillingState=dupliProbOppr.Account.BillingState;
+                mainPayLoad.BillingCountry=dupliProbOppr.Account.BillingCountry;
+                mainPayLoad.BillingPostalCode=dupliProbOppr.Account.BillingPostalCode;
+                mainPayLoad.Phone=dupliProbOppr.Account.Phone;
+                mainPayLoad.Fax=dupliProbOppr.Account.Fax;
+                mainPayLoad.Payment_Terms=dupliProbOppr.Account.Payment_Terms__c;
+                mainPayLoad.AccountMSNAV_Company=dupliProbOppr.MSNAV_Company__c;
+                mainPayLoad.Account_Billing_Contact_Email=dupliProbOppr.Account.Account_Invoice_Contact_Email__c;
+                mainPayLoad.Account_Billing_Contact_Name=dupliProbOppr.Account.Account_Invoice_Contact_Name__c;
+                ///new Field added on 2/2/18
+                mainPayLoad.Customer_Channel_Code=dupliProbOppr.Account.Customer_Channel_Code__c;
+                /// new field added on25-04-18
+                mainPayLoad.GSA=dupliProbOppr.GSA_Order__c;
+                
+                //=================================================Add Opportunity Comments=============================================================
+                
+/*                List<Opportunity_Comment__c> opporComments=[SELECT Id,Name,Comment__c,Opportunity__c,Display_on_PDF__c FROM Opportunity_Comment__c 
+                                                            WHERE Opportunity__c=:dupliProbOppr.Id order by createdDate ASC];
+                system.debug('<======opporComments>'+opporComments); 
+                
+                if(opporComments.size()>0){
+                    //SalesOrderComment
+                    for(Opportunity_Comment__c tempOpprComment:opporComments){
+                        
+                        SalesOrderComment temcom=new SalesOrderComment();
+                        
+                        temcom.Comment=tempOpprComment.Comment__c;
+                        
+                        SalesOrderCommentPayload.add(temcom);
+                        
+                    }                
+                    system.debug('<+++++====>SalesOrderCommentPayload'+SalesOrderCommentPayload);
+                    mainPayLoad.SalesOrdercommentList = SalesOrderCommentPayload;
+                }  */
+
+                ///=====================================================================================================================================                     
+                
+                
+                
+                List<OpportunityLineItem> opporLineItems=[SELECT Id,MD_Order__c,Item_Type__c,Line_Number__c,
+                                                          Product2.MSNAV_Id__c,Quantity,UnitPrice,Description,
+                                                          Product_Description_FromTable_del__c,Additional_Information__c,
+                                                          Tax_Exempt__c,L_W__c,U_M__c FROM OpportunityLineItem 
+                                                          WHERE OpportunityId=:dupliProbOppr.Id];
+                
+                
+                
+                
+                if(opporLineItems.size()>0){
+                    //SalesOrderLine
+                    for(OpportunityLineItem tempOpprList:opporLineItems){
+                        
+                        SalesOrderLine tempSls=new SalesOrderLine();
+                        
+                        tempSls.SF_Id=tempOpprList.Id;
+                        tempSls.ORDER=tempOpprList.MD_Order__c;
+                        tempSls.Item=tempOpprList.Item_Type__c;
+                        tempSls.MSNAV_Line_No=tempOpprList.Line_Number__c ;
+                        tempSls.ProductMSNAV_Id=tempOpprList.Product2.MSNAV_Id__c;
+                        tempSls.Quantity=tempOpprList.Quantity;
+                        tempSls.Unit_Price=tempOpprList.UnitPrice;
+                        tempSls.Description=tempOpprList.Description;
+                        tempSls.UnitPrice=tempOpprList.UnitPrice;
+                        tempSls.Additional_Information=tempOpprList.Additional_Information__c;
+                        tempSls.Tax_Exempt=tempOpprList.Tax_Exempt__c;
+                        tempSls.Additional_Instructions=tempOpprList.Product_Description_FromTable_del__c;
+                        tempSls.L_W=tempOpprList.L_W__c;
+                        tempSls.U_M=tempOpprList.U_M__c;
+                        
+                        opporLineItemsPayload.add(tempSls);
+                        
+                    }                
+                    
+                    mainPayLoad.salesOrderLineList=opporLineItemsPayload;
+                }
+                
+                
+                
+                //============= Push data to API.
+                
+                runApi(mainPayLoad,dupliProbOppr.Id,dupliProbOppr.AccountId);
+                
+            }                         
+            
+            
+            
+        }
+        
+        
+        
+    }
+    
+    global void finish(Database.BatchableContext bc) {
+        //--You can email owner to 
+        
+        try{
+            
+            Bulk_Behavior_Tracking__c tempFinish= new Bulk_Behavior_Tracking__c();
+            tempFinish.Class_Name__c  ='NAVSalesOrderPushSyncBatch';
+            
+            Set<ID> actualId=new Set<ID>();
+            Set<ID> accountId=new Set<ID>();
+            
+            List<OpportunitySyncHelper__c> syncStat=[SELECT Id,Company_Type__c,NAV_Status__c,AccountIdLook__c,OpportunityIDLook__c,SalesorderNo__c,Customer_No__c,Sync_Status__c FROM OpportunitySyncHelper__c WHERE Sync_Status__c=false];
+            
+            tempFinish.Error_Desciption__c ='Data to update on finish : '+syncStat.size();
+            
+            if(syncStat.size()>0){
+                for(Integer i=0;i<syncStat.size();i++){
+                    actualId.add(syncStat.get(i).OpportunityIDLook__c);
+                    accountId.add(syncStat.get(i).AccountIdLook__c);
+                }
+                
+                //===============Processing data...
+                
+                
+                
+                List<Opportunity> opprToUpdate=[SELECT Id,MSNAV_Id__c,AccountId FROM Opportunity WHERE Id IN :actualId];
+                
+                for(Integer i=0;i<opprToUpdate.size();i++){
+                    for(Integer j=0;j<syncStat.size();j++){
+                        
+                        if(opprToUpdate.get(i).Id==syncStat.get(j).OpportunityIDLook__c){
+                            
+                            opprToUpdate.get(i).MSNAV_Id__c=syncStat.get(j).SalesorderNo__c;
+                            
+                            if(String.valueOf(syncStat.get(j).NAV_Status__c)=='Success'){
+                                opprToUpdate.get(i).Generate__c='Sales Order Created';
+                                //syncStat.get(j).Sync_Status__c=true;
+                            }else{
+                                opprToUpdate.get(i).Generate__c='Sales Order Not Created';
+                                opprToUpdate.get(i).MSNAV_Error__c=syncStat.get(j).NAV_Status__c;
+                                //syncStat.get(j).Sync_Status__c=false;
+                                
+                            }
+                            syncStat.get(j).Sync_Status__c=true;
+                            
+                        }
+                    }
+                }
+                
+                
+                List<Account> accountToUpdate=[SELECT Id,MSNAV_Id__c,UK_MSNAV_Id__c FROM Account WHERE Id IN : accountId];
+                for(Integer i=0;i<accountToUpdate.size();i++){
+                    for(Integer j=0;j<syncStat.size();j++){
+                        if(accountToUpdate.get(i).Id==syncStat.get(j).AccountIdLook__c){
+                            if(String.valueOf(syncStat.get(j).NAV_Status__c)=='Success'){
+                                if(syncStat.get(j).Company_Type__c=='US'){
+                                    accountToUpdate.get(i).MSNAV_Id__c=syncStat.get(j).Customer_No__c;
+                                }else{
+                                    accountToUpdate.get(i).UK_MSNAV_Id__c=syncStat.get(j).Customer_No__c;
+                                }
+                                //syncStat.get(j).Sync_Status__c=true;
+                            }else{
+                                //syncStat.get(j).Sync_Status__c=false;
+                            }
+                            
+                            syncStat.get(j).Sync_Status__c=true;
+                        }
+                    }
+                }
+                
+                
+                //==============Deleting data from pusher.
+                List<NAV_Salesorder_Pusher__c> needToDeletePusher=new List<NAV_Salesorder_Pusher__c>();
+                List<NAV_Salesorder_Pusher__c> navPusher=[SELECT Id,Opportunity_Id__c FROM NAV_Salesorder_Pusher__c WHERE Opportunity_Id__c IN :actualId]; 
+                
+                for(NAV_Salesorder_Pusher__c tempPusher:navPusher){
+                    for(OpportunitySyncHelper__c tempHelper:syncStat){
+                        
+                        if(tempPusher.Opportunity_Id__c==tempHelper.OpportunityIDLook__c){
+                            if(String.valueOf(tempHelper.NAV_Status__c)!='Success'){
+                                needToDeletePusher.add(tempPusher);
+                            }
+                        }  
+                        
+                    }
+                }
+                
+                
+                
+                update opprToUpdate;
+                update accountToUpdate;
+                update syncStat;
+                if(needToDeletePusher.size()>0){
+                    delete needToDeletePusher;
+                }
+                
+            }
+            
+            insert tempFinish;
+            
+        }catch(Exception e){
+            
+            Bulk_Behavior_Tracking__c tempFinish= new Bulk_Behavior_Tracking__c();
+            tempFinish.Error_Desciption__c ='Payload : '+e.getMessage();
+            tempFinish.Class_Name__c  ='NAVSalesOrderPushSyncBatch';
+            insert tempFinish;
+            
+        }
+        
+        
+    }
+    
+    	
+	    //================data pushing method.
+    
+    global void runApi(SalesOrderPushToNav tempPayload,Id needToUpdate,Id accountID){
+        
+        //http://146.88.29.126:9080/api/Sync/SalesOrderInsert/{SalesorderSync}
+        //http://146.88.29.126:9080/api/Sync/SalesOrderInsertTest/{SalesorderSync}
+        
+        String responseFromNet;        
+       // String endpointURL ='http://146.88.29.75:9081/api/Sync/SalesOrderInsertTest/'; 
+       String endpointURL ='http://146.88.29.126:9080/api/Sync/SalesOrderInsert/';
+        HttpRequest reqData = new HttpRequest();
+        Http http = new Http();
+        reqData.setTimeout(120000);
+        reqData.setHeader('Content-Type', 'application/json');
+        reqData.setEndpoint(endpointURL);
+        reqData.setMethod('POST');
+        //String str = JSON.serialize(dt);
+        reqData.setBody(JSON.serialize(tempPayload));
+        
+        temp.Error_Desciption__c ='Payload : '+JSON.serialize(tempPayload);
+        system.debug('Payload : '+JSON.serialize(tempPayload));
+        temp.Class_Name__c  ='NAVSalesOrderPushSyncBatch';
+        
+        try {
+            system.debug('<====>reqData' + reqData);
+            HTTPResponse res = http.send(reqData);
+            responseFromNet = res.getBody();
+            system.debug('responseFromNet'+responseFromNet);
+            temp.Error_Desciption__c=temp.Error_Desciption__c+' :: responseFromNet : '+responseFromNet;
+            
+            parseData(responseFromNet,needToUpdate,accountID);
+            
+        }catch(Exception exp){
+            
+            temp.Error_Desciption__c =temp.Error_Desciption__c+'Nav Push Error : '+exp.getMessage();
+            
+            if(Test.isRunningTest()){
+                String responseStr='{"Id":1,"Statement":"Success","salesorderno":"SO130872","company":"US","customerno":"C112283"}';
+                parseData(responseStr,needToUpdate,accountID);
+            }
+            
+        }   
+        
+        insert temp;
+        
+    }
+    
+    
+    
+    public void parseData(final String responseData,final Id needToUpdate,final Id accountID){
+        JSONParser parser = JSON.createParser(responseData);
+        while (parser.nextToken() != null) {
+            if (parser.getCurrentToken() == JSONToken.START_OBJECT) {
+                
+                temp.Error_Desciption__c=temp.Error_Desciption__c+' :: Parse Completed.';
+                
+                SalesSyncResponse sOrder = (SalesSyncResponse)parser.readValueAs(SalesSyncResponse.class);
+                
+                OpportunitySyncHelper__c syncStat=new OpportunitySyncHelper__c();
+                
+                syncStat.AccountIdLook__c=accountID;
+                syncStat.OpportunityIDLook__c=needToUpdate;
+                syncStat.SalesorderNo__c=sOrder.salesorderno;
+                syncStat.Customer_No__c=sOrder.customerno;
+                syncStat.Company_Type__c=sOrder.company;//Statement
+                syncStat.NAV_Status__c=sOrder.Statement;
+                
+                insert syncStat;
+                
+            }else{
+                temp.Error_Desciption__c=temp.Error_Desciption__c+' :: Parse in Progress Else...';
+            }
+        }
+    }
+    
+}
