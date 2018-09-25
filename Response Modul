@@ -1,0 +1,4 @@
+public class SignHubResponseDetail {
+	public string Package_id { get; set; }
+    //public string Document_body { get; set; }
+}
