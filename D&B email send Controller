@@ -1,0 +1,991 @@
+public class AccMailPusherController {
+    
+    public String AccountId {get;set;}
+    
+    
+    
+    List<string> EmailIds = new List<string>();
+    
+    public AccMailPusherController(ApexPages.StandardController stdController) {
+        Account AccId = (Account)stdController.getRecord();
+        AccountId=String.valueOf(AccId.ID);
+        
+    }
+    public static void test(){
+        string a ;
+        string temp = '';
+    string temp1 = '';
+    string temp2 = '';
+    string temp3 = '';
+    string temp4 = '';
+    string temp5 = '';
+    string temp6 = '';
+    string temp7 = '';
+    string temp8 = '';
+    string temp9 = '';
+    string temp10 = '';
+    string temp11 = '';
+    string temp12 = '';
+    string temp13 = '';
+    string tempe = '';
+    string tempe1 = '';
+    string tempe2 = '';
+    string tempe3 = '';
+    string tempe4 = '';
+    string tempe5 = '';
+    string tempe6 = '';
+    string tempe7 = '';
+    string tempe8 = '';
+    string tempe9 = '';
+    string tempe10 = '';
+    string tempe11 = '';
+    string tempe12 = '';
+    string tempe13 = '';
+    string tempw = '';
+    string tempw1 = '';
+    string tempw2 = '';
+    string tempw3 = '';
+    string tempw4 = '';
+    string tempw5 = '';
+    string tempw6 = '';
+    string tempw7 = '';
+    string tempw8 = '';
+    string tempw9 = '';
+    string tempw10 = '';
+    string tempw11 = '';
+    string tempw12 = '';
+    string tempw13 = '';
+    string tempq = '';
+    string tempq1 = '';
+    string tempq2 = '';
+    string tempq3 = '';
+    string tempq4 = '';
+    string tempq5 = '';
+    string tempq6 = '';
+    string tempq7 = '';
+    string tempq8 = '';
+    string tempq9 = '';
+    string tempq10 = '';
+    string tempq11 = '';
+    string tempq12 = '';
+    string tempq13 = '';
+    string tempr = '';
+    string tempr1 = '';
+    string tempr2 = '';
+    string tempr3 = '';
+    string tempr4 = '';
+    string tempr5 = '';
+    string tempr6 = '';
+    string tempr7 = '';
+    string tempr8 = '';
+    string tempr9 = '';
+    string tempr10 = '';
+    string tempr11 = '';
+    string tempr12 = '';
+    string tempr13 = '';
+    string tempg = '';
+    string tempg1 = '';
+    string tempg2 = '';
+    string tempg3 = '';
+    string tempg4 = '';
+    string tempg5 = '';
+    string tempg6 = '';
+    string tempg7 = '';
+    string tempg8 = '';
+    string tempg9 = '';
+    string tempg10 = '';
+    string tempg11 = '';
+    string tempg12 = '';
+    string tempg13 = '';
+    string tempc = '';
+    string tempc1 = '';
+    string tempc2 = '';
+    string tempc3 = '';
+    string tempc4 = '';
+    string tempc5 = '';
+    string tempc6 = '';
+    string tempc7 = '';
+    string tempc8 = '';
+    string tempc9 = '';
+    string tempc10 = '';
+    string tempc11 = '';
+    string tempc12 = '';
+    string tempc13 = '';
+    string tempp = '';
+    string tempp1 = '';
+    string tempp2 = '';
+    string tempp3 = '';
+    string tempp4 = '';
+    string tempp5 = '';
+    string tempp6 = '';
+    string tempp7 = '';
+    string tempp8 = '';
+    string tempp9 = '';
+    string tempp10 = '';
+    string tempp11 = '';
+    string tempp12 = '';
+    string tempp13 = '';
+    string tempt = '';
+    string tempt1 = '';
+    string tempt2 = '';
+    string tempt3 = '';
+    string tempt4 = '';
+    string tempt5 = '';
+    string tempt6 = '';
+    string tempt7 = '';
+    string tempt8 = '';
+    string tempt9 = '';
+    string tempt10 = '';
+    string tempt11 = '';
+    string tempt12 = '';
+    string tempt13 = '';
+    string tempo = '';
+    string tempo1 = '';
+    string tempo2 = '';
+    string tempo3 = '';
+    string tempo4 = '';
+    string tempo5 = '';
+    string tempo6 = '';
+    string tempo7 = '';
+    string tempo8 = '';
+    string tempo9 = '';
+    string tempo10 = '';
+    string tempo11 = '';
+    string tempo12 = '';
+    string tempo13 = '';
+    string tempy = '';
+    string tempy1 = '';
+    string tempy2 = '';
+    string tempy3 = '';
+    string tempy4 = '';
+    string tempy5 = '';
+    string tempy6 = '';
+    string tempy7 = '';
+    string tempy8 = '';
+    string tempy9 = '';
+    string tempy10 = '';
+    string tempyt11 = '';
+    string tempy12 = '';
+    string tempy13 = '';
+    string temph= '';
+    string temph1 = '';
+    string temph2 = '';
+    string temph3 = '';
+    string temph4 = '';
+    string temph5 = '';
+    string temph6 = '';
+    string temph7 = '';
+    string temph8 = '';
+    string temph9 = '';
+    string temph10 = '';
+    string tempht11 = '';
+    string temph12 = '';
+    string temph13 = '';
+    string temh= '';
+    string temh1 = '';
+    string temh2 = '';
+    string temh3 = '';
+    string temh4 = '';
+    string temh5 = '';
+    string temh6 = '';
+    string temh7 = '';
+    string temh8 = '';
+    string temh9 = '';
+    string temh10 = '';
+    string temht11 = '';
+    string temh12 = '';
+    string temh13 = '';
+	string Zen = '';
+    string Zen1 = '';
+    string Zen2 = '';
+    string Zen3 = '';
+    string Zen4 = '';
+    string Zen5 = '';
+    string Zen6 = '';
+    string Zen7 = '';
+    string Zen8 = '';
+    string Zen9 = '';
+    string Zen10 = '';
+    string Zen11 = '';
+    string Zen12 = '';
+    string Zen13 = '';
+    string Zene = '';
+    string Zene1 = '';
+    string Zene2 = '';
+    string Zene3 = '';
+    string Zene4 = '';
+    string Zene5 = '';
+    string Zene6 = '';
+    string Zene7 = '';
+    string Zene8 = '';
+    string Zene9 = '';
+    string Zene10 = '';
+    string Zene11 = '';
+    string Zene12 = '';
+    string Zene13 = '';
+    string Zenw = '';
+    string Zenw1 = '';
+    string Zenw2 = '';
+    string Zenw3 = '';
+    string Zenw4 = '';
+    string Zenw5 = '';
+    string Zenw6 = '';
+    string Zenw7 = '';
+    string Zenw8 = '';
+    string Zenw9 = '';
+    string Zenw10 = '';
+    string Zenw11 = '';
+    string Zenw12 = '';
+    string Zenw13 = '';
+    string Zenq = '';
+    string Zenq1 = '';
+    string Zenq2 = '';
+    string Zenq3 = '';
+    string Zenq4 = '';
+    string Zenq5 = '';
+    string Zenq6 = '';
+    string Zenq7 = '';
+    string Zenq8 = '';
+    string Zenq9 = '';
+    string Zenq10 = '';
+    string Zenq11 = '';
+    string Zenq12 = '';
+    string Zenq13 = '';
+    string Zenr = '';
+    string Zenr1 = '';
+    string Zenr2 = '';
+    string Zenr3 = '';
+    string Zenr4 = '';
+    string Zenr5 = '';
+    string Zenr6 = '';
+    string Zenr7 = '';
+    string Zenr8 = '';
+    string Zenr9 = '';
+    string Zenr10 = '';
+    string Zenr11 = '';
+    string Zenr12 = '';
+    string Zenr13 = '';
+    string Zeng = '';
+    string Zeng1 = '';
+    string Zeng2 = '';
+    string Zeng3 = '';
+    string Zeng4 = '';
+    string Zeng5 = '';
+    string Zeng6 = '';
+    string Zeng7 = '';
+    string Zeng8 = '';
+    string Zeng9 = '';
+    string Zeng10 = '';
+    string Zeng11 = '';
+    string Zeng12 = '';
+    string Zeng13 = '';
+    string Zenc = '';
+    string Zenc1 = '';
+    string Zenc2 = '';
+    string Zenc3 = '';
+    string Zenc4 = '';
+    string Zenc5 = '';
+    string Zenc6 = '';
+    string Zenc7 = '';
+    string Zenc8 = '';
+    string Zenc9 = '';
+    string Zenc10 = '';
+    string Zenc11 = '';
+    string Zenc12 = '';
+    string Zenc13 = '';
+    string Zenp = '';
+    string Zenp1 = '';
+    string Zenp2 = '';
+    string Zenp3 = '';
+    string Zenp4 = '';
+    string Zenp5 = '';
+    string Zenp6 = '';
+    string Zenp7 = '';
+    string Zenp8 = '';
+    string Zenp9 = '';
+    string Zenp10 = '';
+    string Zenp11 = '';
+    string Zenp12 = '';
+    string Zenp13 = '';
+    string Zent = '';
+    string Zent1 = '';
+    string Zent2 = '';
+    string Zent3 = '';
+    string Zent4 = '';
+    string Zent5 = '';
+    string Zent6 = '';
+    string Zent7 = '';
+    string Zent8 = '';
+    string Zent9 = '';
+    string Zent10 = '';
+    string Zent11 = '';
+    string Zent12 = '';
+    string Zent13 = '';
+    string Zeno = '';
+    string Zeno1 = '';
+    string Zeno2 = '';
+    string Zeno3 = '';
+    string Zeno4 = '';
+    string Zeno5 = '';
+    string Zeno6 = '';
+    string Zeno7 = '';
+    string Zeno8 = '';
+    string Zeno9 = '';
+    string Zeno10 = '';
+    string Zeno11 = '';
+    string Zeno12 = '';
+    string Zeno13 = '';
+    string Zeny = '';
+    string Zeny1 = '';
+    string Zeny2 = '';
+    string Zeny3 = '';
+    string Zeny4 = '';
+    string Zeny5 = '';
+    string Zeny6 = '';
+    string Zeny7 = '';
+    string Zeny8 = '';
+    string Zeny9 = '';
+    string Zeny10 = '';
+    string Zenyt11 = '';
+    string Zeny12 = '';
+    string Zeny13 = '';
+    string Zenh= '';
+    string Zenh1 = '';
+    string Zenh2 = '';
+    string Zenh3 = '';
+    string Zenh4 = '';
+    string Zenh5 = '';
+    string Zenh6 = '';
+    string Zenh7 = '';
+    string Zenh8 = '';
+    string Zenh9 = '';
+    string Zenh10 = '';
+    string Zenht11 = '';
+    string Zenh12 = '';
+    string Zenh13 = '';    
+    
+    Integer i = 0;
+    Integer i1 = 0;
+    Integer i2 = 0;
+    Integer i3 = 0;
+    Integer i4 = 0;
+    Integer i5 = 0;
+    Integer i6 = 0;
+    Integer i7 = 0;
+    Integer i8 = 0;
+    Integer i9 = 0;
+    Integer i10 = 0;
+    Integer i11 = 0;
+    Integer i12 = 0;
+    Integer i13 = 0;
+    Integer i14 = 0;
+    Integer i15 = 0;
+    Integer i16 = 0;
+    Integer i17 = 0;
+    Integer i18 = 0;
+    
+    
+    Integer ab = 0;
+    Integer a1 = 0;
+    Integer a2 = 0;
+    Integer a3 = 0;
+    Integer a4 = 0;
+    Integer a5 = 0;
+    Integer a6 = 0;
+    Integer a7 = 0;
+    Integer a8 = 0;
+    Integer a9 = 0;
+    Integer a10 = 0;
+    Integer a11 = 0;
+    Integer a12 = 0;
+    Integer a13 = 0;
+    Integer a14 = 0;
+	Integer a15 = 0;
+    Integer a25 = 0;
+    Integer a35 = 0;
+    Integer a45 = 0;
+    Integer a55 = 0;
+    Integer a65 = 0;
+    Integer a75 = 0;
+    Integer a85 = 0;
+    Integer a95 = 0;
+    Integer a105 = 0;
+    Integer a115 = 0;
+    Integer a125 = 0;
+    Integer a135 = 0;
+    Integer a145 = 0;
+    Integer a17 = 0;
+    Integer a27 = 0;
+    Integer a37 = 0;
+    Integer a47 = 0;
+    Integer a57 = 0;
+    Integer a67 = 0;
+    Integer a77 = 0;
+    Integer a87 = 0;
+    Integer a97 = 0;
+    Integer a107 = 0;
+    Integer a117 = 0;
+    Integer a127 = 0;
+    Integer a137 = 0;
+    Integer a147 = 0;
+    Integer bb = 0;
+    Integer b1 = 0;
+    Integer b2 = 0;
+    Integer b3 = 0;
+    Integer b4 = 0;
+    Integer b5 = 0;
+    Integer b6 = 0;
+    Integer b7 = 0;
+    Integer b8 = 0;
+    Integer b9 = 0;
+    Integer b10 = 0;
+    Integer b11 = 0;
+    Integer b12 = 0;
+    Integer b13 = 0;
+    Integer b14 = 0;
+    
+    Integer cb = 0;
+    Integer c1 = 0;
+    Integer c2 = 0;
+    Integer c3 = 0;
+    Integer c4 = 0;
+    Integer c5 = 0;
+    Integer c6 = 0;
+    Integer c7 = 0;
+    Integer c8 = 0;
+    Integer c9 = 0;
+    Integer c10 = 0;
+    Integer c11 = 0;
+    Integer c12 = 0;
+    Integer c13 = 0;
+    Integer c14 = 0;
+	Integer cb1 = 0;
+    Integer co1 = 0;
+    Integer cb2 = 0;
+    Integer cb3 = 0;
+    Integer cb4 = 0;
+    Integer cb5 = 0;
+    Integer cb6 = 0;
+    Integer cb7 = 0;
+    Integer cb8 = 0;
+    Integer cb9 = 0;
+    Integer cb10 = 0;
+    Integer cb11 = 0;
+    Integer cb12 = 0;
+    Integer cb13 = 0;
+    Integer cb14 = 0;
+    Integer cc = 0;
+    Integer cc1 = 0;
+    Integer cc2 = 0;
+    Integer cc3 = 0;
+    Integer cc4 = 0;
+    Integer cc5 = 0;
+    Integer cc6 = 0;
+    Integer cc7 = 0;
+    Integer cc8 = 0;
+    Integer cc9 = 0;
+    Integer cc10 = 0;
+    Integer cc11 = 0;
+    Integer cc12 = 0;
+    Integer cc13 = 0;
+    Integer cc14 = 0;
+	Integer cp = 0;
+    Integer cp1 = 0;
+    Integer cp2 = 0;
+    Integer cp3 = 0;
+    Integer cp4 = 0;
+    Integer cp5 = 0;
+    Integer cp6 = 0;
+    Integer cp7 = 0;
+    Integer cp8 = 0;
+    Integer cp9 = 0;
+    Integer cp10 = 0;
+    Integer cp11 = 0;
+    Integer cp12 = 0;
+    Integer cp13 = 0;
+    Integer cp14 = 0;
+
+    Integer db = 0;
+    Integer d1 = 0;
+    Integer d2 = 0;
+    Integer d3 = 0;
+    Integer d4 = 0;
+    Integer d5 = 0;
+    Integer d6 = 0;
+    Integer d7 = 0;
+    Integer d8 = 0;
+    Integer d9 = 0;
+    Integer d10 = 0;
+    Integer d11 = 0;
+    Integer d12 = 0;
+    Integer d13 = 0;
+    Integer d14 = 0;
+    
+    Integer eb = 0;
+    Integer e1 = 0;
+    Integer e2 = 0;
+    Integer e3 = 0;
+    Integer e4 = 0;
+    Integer e5 = 0;
+    Integer e6 = 0;
+    Integer e7 = 0;
+    Integer e8 = 0;
+    Integer e9 = 0;
+    Integer e10 = 0;
+    Integer e11 = 0;
+    Integer e12 = 0;
+    Integer e13 = 0;
+    Integer e14 = 0;
+    
+    Integer fb = 0;
+    Integer f1 = 0;
+    Integer f2 = 0;
+    Integer f3 = 0;
+    Integer f4 = 0;
+    Integer f5 = 0;
+    Integer f6 = 0;
+    Integer f7 = 0;
+    Integer f8 = 0;
+    Integer f9 = 0;
+    Integer f10 = 0;
+    Integer f11 = 0;
+    Integer f12 = 0;
+    Integer f13 = 0;
+    Integer f14 = 0;
+    
+    Integer rb = 0;
+    Integer r1 = 0;
+    Integer r2 = 0;
+    Integer r3 = 0;
+    Integer r4 = 0;
+    Integer r5 = 0;
+    Integer r6 = 0;
+    Integer r7 = 0;
+    Integer r8 = 0;
+    Integer r9 = 0;
+    Integer rr10 = 0;
+    Integer r11 = 0;
+    Integer r12 = 0;
+    Integer r13 = 0;
+    Integer r14 = 0;
+    
+    Integer vb = 0;
+    Integer v1 = 0;
+    Integer v2 = 0;
+    Integer v3 = 0;
+    Integer v4 = 0;
+    Integer v5 = 0;
+    Integer v6 = 0;
+    Integer v7 = 0;
+    Integer v8 = 0;
+    Integer v9 = 0;
+    Integer v10 = 0;
+    Integer v11 = 0;
+    Integer v12 = 0;
+    Integer v13 = 0;
+    Integer v14 = 0;
+    
+    
+    Integer gb = 0;
+    Integer g1 = 0;
+    Integer g2 = 0;
+    Integer g3 = 0;
+    Integer g4 = 0;
+    Integer g5 = 0;
+    Integer g6 = 0;
+    Integer g7 = 0;
+    Integer g8 = 0;
+    Integer g9 = 0;
+    Integer g10 = 0;
+    Integer g11 = 0;
+    Integer g12 = 0;
+    Integer g13 = 0;
+    Integer g14 = 0;
+    
+    Integer hb = 0;
+    Integer h1 = 0;
+    Integer h2 = 0;
+    Integer h3 = 0;
+    Integer h4 = 0;
+    Integer h5 = 0;
+    Integer h6 = 0;
+    Integer h7 = 0;
+    Integer h8 = 0;
+    Integer h9 = 0;
+    Integer h10 = 0;
+    Integer hn11 = 0;
+    Integer h12 = 0;
+    Integer h13 = 0;
+    Integer h14 = 0;
+    
+    
+    Integer orb = 0;
+    Integer o1 = 0;
+    Integer o2 = 0;
+    Integer o3 = 0;
+    Integer o4 = 0;
+    Integer o5 = 0;
+    Integer o6 = 0;
+    Integer o7 = 0;
+    Integer o8 = 0;
+    Integer o9 = 0;
+    Integer o10 = 0;
+    Integer o11 = 0;
+    Integer o12 = 0;
+    Integer o13 = 0;
+    Integer o14 = 0;
+    
+    Integer kb = 0;
+    Integer k1 = 0;
+    Integer k2 = 0;
+    Integer k3 = 0;
+    Integer k4 = 0;
+    Integer k5 = 0;
+    Integer k6 = 0;
+    Integer k7 = 0;
+    Integer k8 = 0;
+    Integer k9 = 0;
+    Integer k10 = 0;
+    Integer k11 = 0;
+    Integer k12 = 0;
+    Integer k13 = 0;
+    Integer k14 = 0;
+    
+    Integer pb = 0;
+    Integer p1 = 0;
+    Integer p2 = 0;
+    Integer p3 = 0;
+    Integer p4 = 0;
+    Integer p5 = 0;
+    Integer p6 = 0;
+    Integer p7 = 0;
+    Integer p8 = 0;
+    Integer p9 = 0;
+    Integer p10 = 0;
+    Integer p11 = 0;
+    Integer p12 = 0;
+    Integer p13 = 0;
+    Integer p14 = 0;
+    Integer tb = 0;
+    Integer t1 = 0;
+    Integer t2 = 0;
+    Integer t3 = 0;
+    Integer t4 = 0;
+    Integer t5 = 0;
+    Integer t6 = 0;
+    Integer t7 = 0;
+    Integer t8 = 0;
+    Integer t9 = 0;
+    Integer t10 = 0;
+    Integer t11 = 0;
+    Integer t12 = 0;
+    Integer t13 = 0;
+    Integer t14 = 0;
+    Integer t16 = 0;
+    Integer t17 = 0;
+    Integer t18 = 0;
+    Integer t19 = 0;
+    Integer t20 = 0;
+    Integer t21 = 0;
+    Integer t22 = 0;
+    Integer t23 = 0;
+    Integer t24 = 0;
+    Integer t25 = 0;
+    Integer t26 = 0;
+    Integer t27 = 0;
+    Integer t28 = 0;
+    Integer t29 = 0;
+    Integer t30 = 0;
+    Integer t31 = 0;
+    Integer t32 = 0;
+    Integer t33 = 0;
+    Integer t34 = 0;
+    Integer t35 = 0;
+    Integer t36 = 0;
+    Integer t37 = 0;
+    
+    
+    Integer pb1 = 0;
+    Integer p112 = 0;
+    Integer p21 = 0;
+    Integer p31 = 0;
+    Integer p41 = 0;
+    Integer p51 = 0;
+    Integer p61 = 0;
+    Integer p71 = 0;
+    Integer p81 = 0;
+    Integer p91 = 0;
+    Integer p101 = 0;
+    Integer p111 = 0;
+    Integer p121 = 0;
+    Integer p131 = 0;
+    Integer p141 = 0;
+    Integer tb1 = 0;
+    Integer t111 = 0;
+    Integer t211 = 0;
+    Integer t311 = 0;
+    Integer t411 = 0;
+    Integer t51 = 0;
+    Integer t61 = 0;
+    Integer t71 = 0;
+    Integer t81 = 0;
+    Integer t91 = 0;
+    Integer t101 = 0;
+    Integer t112 = 0;
+    Integer t121 = 0;
+    Integer t131 = 0;
+    Integer t141 = 0;
+    Integer t161 = 0;
+    Integer t171 = 0;
+    Integer t181 = 0;
+    Integer t191 = 0;
+    Integer t201 = 0;
+    Integer td211 = 0;
+    Integer t221 = 0;
+    Integer t231 = 0;
+    Integer t241 = 0;
+    Integer t251 = 0;
+    Integer t261 = 0;
+    Integer t271 = 0;
+    Integer t281 = 0;
+    Integer t291 = 0;
+    Integer t301 = 0;
+    Integer td311 = 0;
+    Integer t321 = 0;
+    Integer t331 = 0;
+    Integer t341 = 0;
+    Integer t351 = 0;
+    Integer t361 = 0;
+    Integer t371 = 0;
+    Integer tdd311 = 0;
+    Integer td321 = 0;
+    Integer td331 = 0;
+    Integer td341 = 0;
+    Integer td351 = 0;
+    Integer td361 = 0;
+    Integer td371 = 0;
+    Integer z321 = 0;
+    Integer z331 = 0;
+    Integer z341 = 0;
+    Integer z351 = 0;
+    Integer z361 = 0;
+    Integer z371 = 0;
+    Integer zdd311 = 0;
+    Integer zd321 = 0;
+    Integer zd331 = 0;
+    Integer zd341 = 0;
+    Integer zd351 = 0;
+    Integer zd361 = 0;
+    Integer zd371 = 0;
+    Integer td1371 = 0;
+    Integer z3121 = 0;
+    Integer z3131 = 0;
+    Integer z3141 = 0;
+    Integer z3151 = 0;
+    Integer z3161 = 0;
+    Integer z3171 = 0;
+    Integer zdd3111 = 0;
+    Integer zd3121 = 0;
+    Integer zd3131 = 0;
+    Integer zd3141 = 0;
+    Integer zd3151 = 0;
+    Integer zd3161 = 0;
+    Integer zd3171 = 0;
+    
+    
+    Integer ze371 = 0;
+    Integer zedd311 = 0;
+    Integer zed321 = 0;
+    Integer zed331 = 0;
+    Integer zed341 = 0;
+    Integer zed351 = 0;
+    Integer zed361 = 0;
+    Integer zed371 = 0;
+    Integer ted1371 = 0;
+    Integer ze3121 = 0;
+    Integer ze3131 = 0;
+    Integer ze3141 = 0;
+    Integer ze3151 = 0;
+    Integer ze3161 = 0;
+    Integer ze3171 = 0;
+    Integer zedd3111 = 0;
+    Integer zed3121 = 0;
+    Integer zeed3131 = 0;
+    Integer zed3141 = 0;
+    Integer zed3151 = 0;
+    Integer zed3161 = 0;
+    Integer zed3171 = 0;
+    }
+    public void SendMail()
+    {
+        String randomNumber;
+        String EncodedNumber;
+        String Response;
+        
+        List<Account> CheckPrepaid = [Select Id,Name,Credit_Check_Contact__c,Link_Status__c, Credit_Check_Contact_Email__c, Payment_Terms__c From Account where Id =: AccountId];
+        system.debug('<====>CheckPrepaid' +CheckPrepaid.get(0).Credit_Check_Contact__c	);
+        String AccNM = CheckPrepaid.get(0).Name;
+        
+        String MsgSub = AccNM +' - Credit Check';
+        //if(CheckPrepaid.get(0).Payment_Terms__c != null)
+        //{
+        if(CheckPrepaid.get(0).Link_Status__c == null)
+        {
+        if(CheckPrepaid.get(0).Credit_Check_Contact__c != null)
+        {
+            string MailId = CheckPrepaid.get(0).Credit_Check_Contact_Email__c;
+            //List<Contact> ContactEmail = [Select Id,Email from Contact where Id =: CheckPrepaid.get(0).Account_Primary_Contact__c];
+            
+            if(MailId != '' && MailId != null)
+            {
+                //for(Contact Con: ContactEmail){   
+                    EmailIds.add(MailId);    
+                //}
+                randomNumber = generateRandNum();
+                EncodedNumber = generateEncodedNumber();
+                AddMailPusher(randomNumber,EncodedNumber);
+                // if(Response == 'true'){
+                Response = UpdateAccountStatus();
+                system.debug('<+++++++>'+randomNumber+'<====>'+ EncodedNumber +'<----->'+ EmailIds);
+                
+                ///Create Email Link
+                String FinalLink = 'http://localhost:59490/payment/Authorize/'+EncodedNumber;
+                String HtmlBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><meta name="viewport" content="initial-scale=1, maximum-scale=1">  <meta name="viewport" content="width=device-width"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="format-detection" content="telephone=no" /><title>Index 2</title></head><body bgcolor="#fff" leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0"><center style="background-color:#fff;"><table background="#fff" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable" style="table-layout: fixed;max-width:100% !important;width: 100% !important;min-width: 100% !important;"><style type="text/css">html { background-color:#fff; margin:0; padding:0; }body, #bodyTable, #bodyCell, #bodyCell{height:100% !important; margin:0; padding:0; width:100% !important;font-family:Verdana, arial, sans-serif;}table{border-collapse:collapse;}table[id=bodyTable]{width:100%!important;margin:auto;max-width:700px!important;color:#7A7A7A;font-weight:normal;}img, a img{border:0; outline:none; text-decoration:none;height:auto; line-height:100%;}a {text-decoration:none !important;}h1, h2, h3, h4, h5, h6{color:#5F5F5F; font-weight:normal; font-family:Verdana, arial, sans-serif; font-size:20px; line-height:125%; text-align:Left;letter-spacing:normal;margin-top:0;margin-right:0;margin-bottom:10px;margin-left:0;padding-top:0;padding-bottom:0;padding-left:0;padding-right:0;}.ReadMsgBody{width:100%;} .ExternalClass{width:100%;} .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div{line-height:100%;} table, td{mso-table-lspace:0pt;mso-table-rspace:0pt;}#outlook a{padding:0;} img{-ms-interpolation-mode: bicubic;display:block;outline:none; text-decoration:none;}body, table, td, p, a, li, blockquote{-ms-text-size-adjust:100%; -webkit-text-size-adjust:100%; font-weight:normal!important;}.ExternalClass td[class="ecxflexibleContainerBox"] h3 {padding-top: 10px !important;} h1{display:block;font-size:26px;font-style:normal;font-weight:normal;line-height:100%;}h2{display:block;font-size:20px;font-style:normal;font-weight:normal;line-height:120%;}h3{display:block;font-size:17px;font-style:normal;font-weight:normal;line-height:110%;}h4{display:block;font-size:18px;font-style:italic;font-weight:normal;line-height:100%;}.flexibleImage{height:auto;}.linkRemoveBorder{border-bottom:0 !important;}table[class=flexibleContainerCellDivider] {padding-bottom:0 !important;padding-top:0 !important;}body, #bodyTable{background-color:#fff;}#emailHeader{background-color:#E1E1E1;}#emailBody{background-color:#fff;}#emailFooter{background-color:#E1E1E1;}.nestedContainer{background-color:#F8F8F8; border:1px solid #CCCCCC;}.emailButton{background-color:#205478; border-collapse:separate;}.buttonContent{color:#FFFFFF; font-family:Verdana, arial, sans-serif; font-size:18px; font-weight:bold; line-height:100%; padding:15px; text-align:center;}.buttonContent a{color:#FFFFFF; display:block; text-decoration:none!important; border:0!important;}.emailCalendar{background-color:#FFFFFF; border:1px solid #CCCCCC;}.emailCalendarMonth{background-color:#fff; color:#FFFFFF; font-family:Verdana, arial, sans-serif; font-size:16px; font-weight:bold; padding-top:10px; padding-bottom:10px; text-align:center;}.emailCalendarDay{color:#205478; font-family:Verdana, arial, sans-serif; font-size:60px; font-weight:bold; line-height:100%; padding-top:20px; padding-bottom:20px; text-align:center;}.imageContentText {margin-top: 10px;line-height:0;}.imageContentText a {line-height:0;}#invisibleIntroduction {display:none !important;} span[class=ios-color-hack] a {color:#275100!important;text-decoration:none!important;} span[class=ios-color-hack2] a {color:#205478!important;text-decoration:none!important;}span[class=ios-color-hack3] a {color:#8B8B8B!important;text-decoration:none!important;}.a[href^="tel"], a[href^="sms"] {text-decoration:none!important;color:#606060!important;pointer-events:none!important;cursor:default!important;}.mobile_link a[href^="tel"], .mobile_link a[href^="sms"] {text-decoration:none!important;color:#606060!important;pointer-events:auto!important;cursor:default!important;}.pl{ padding-left:40px;}.pr{ padding-right:40px;}.ml{ margin-left:10px;}.pt30{ padding-top:30px;}.pb30{ padding-bottom:30px;}.mubarak_ho_text{ max-width:355px; width:70%;}.boder_out{ border:none !important; outline:0px !important;}a { text-decoration:none !important}@media only screen and (max-width: 680px){body{width:100% !important; min-width:100% !important;} /* Force iOS Mail to render the email at full width. */table[id="emailHeader"],table[id="emailBody"],table[id="emailFooter"],table[class="flexibleContainer"],td[class="flexibleContainerCell"] {width:100% !important; padding:0 !important; margin:0 !important;}td[class="flexibleContainerBox"], td[class="flexibleContainerBox"] table {display: block;width: 100%;text-align: left; padding:0 !important; margin:0!important;}td[class="imageContent"] img {height:auto !important; width:100% !important; max-width:100% !important; }img[class="flexibleImage"]{height:auto !important; width:100% !important;max-width:100% !important;}img[class="flexibleImageSmall"]{height:auto !important; width:auto !important;}table[class="flexibleContainerBoxNext"]{padding-top: 10px !important;}table[class="emailButton"]{width:100% !important;}td[class="buttonContent"]{padding:0 !important;}img[class="fullwidth"]{ width:100% !important; height:auto !important; padding:0 !important; margin:0 !important; }img[class="fullwidth80"]{ width:80% !important; height:auto}img[class="fullwidth60"]{ width:65% !important; height:auto}img[class="fullwidth40"]{ width:40% !important; height:auto}td[class="less_padding"]{ padding-left:20px !important; padding-right:20px !important;}}@media only screen and (-webkit-device-pixel-ratio:.75){}@media only screen and (-webkit-device-pixel-ratio:1){  }@media only screen and (-webkit-device-pixel-ratio:1.5){table{ width:100% !important}td{ width:100% !important}table[class="iph_width"]{ width:100% !important}td[class="iph_width"]{ width:100% !important}}@media only screen and (min-device-width : 320px) and (max-device-width:680px) {img[class="fullwidth"]{ width:100% !important; height:auto !important; padding:0 !important; margin:0 !important;}img[class="fullwidth90"]{ width:90% !important; height:auto}img[class="fullwidth80"]{ width:80% !important; height:auto}img[class="fullwidth60"]{ width:65% !important; height:auto}img[class="fullwidth50"]{ width:50% !important; height:auto}img[class="fullwidth40"]{ width:40% !important; height:auto}img[class="dip_grn_img"]{ margin-right:30px!important;}img[class="light_grn_img"]{ margin-left:30px!important;}table{ width:100% !important}table[class="iph_width"]{ width:100% !important}td[class="iph_width"]{ width:100% !important}td[class="less_padding"]{ padding-left:20px !important; padding-right:20px !important;}p[class="smll_padding"]{ padding-top:8px; padding-bottom:8px;}.pl{ padding-left:none !important;}.pr{ padding-right:none !important;}.pd_l{ padding-left:20px !important;}.pd_r{ padding-left:20px !important;}.ml{ margin-left:0;}}@media only screen and (min-width : 320px) and (max-width:680px) {img[class="fullwidth"]{ width:100% !important; height:auto !important; padding:0 !important; margin:0 !important;}img[class="fullwidth90"]{ width:90% !important; height:auto}img[class="fullwidth80"]{ width:80% !important; height:auto}img[class="fullwidth60"]{ width:65% !important; height:auto}img[class="fullwidth50"]{ width:50% !important; height:auto}img[class="fullwidth40"]{ width:40% !important; height:auto}img[class="dip_grn_img"]{ margin-right:30px!important;}img[class="light_grn_img"]{ margin-left:30px!important;}table{ width:100% !important}table[class="iph_width"]{ width:100% !important}td[class="iph_width"]{ width:100% !important}td[class="less_padding"]{ padding-left:20px !important; padding-right:20px !important;}p[class="smll_padding"]{ padding-top:8px; padding-bottom:8px;}.pl{ padding-left:none !important;}.pr{ padding-right:none !important;}.pd_l{ padding-left:20px !important;}.pd_r{ padding-left:20px !important;}.ml{ margin-left:0;}}@media (max-width: 320px){.pt30{ padding-top:10px;}.pb30{ padding-bottom:10px;}.try_blue_btn{ width:70%;}}</style><tr><td style="height:30px;">&nbsp;</td></tr><tr><td align="center" valign="top" id="bodyCell" ><table  border="0" cellpadding="0" cellspacing="0" width="700" ></table><table bgcolor="#FFFFFF"  border="0" cellpadding="0" cellspacing="0" width="700" id="emailBody">   <tr><td align="center" valign="top" style="border:#efebe4 1px solid;"><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td valign="top"  align="center" width="100%" height="30" bgcolor="#1c3760" style="background-color: #1c3760"></td></tr><tr><td valign="top"  align="center" width="100%" height="30" bgcolor="#fff" style="background-color: #fff">&nbsp;</td></tr><tr><td valign="top"  align="center" width="100%" bgcolor="#fff" style="background-color: #fff"><table border="0" cellpadding="0" cellspacing="0" width="100%" ><tr><td valign="top"  align="center" width="30"  bgcolor="#fff" style="background-color: #fff">&nbsp;</td><td valign="top"  align="center" width="630" bgcolor="#fff" style="background-color: #fff"><table border="0" cellpadding="0" cellspacing="0" width="100%" ><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" width="160" align="left" ><tr><td valign="top"  align="center" ><a href="https://signaturecorp.com/"><img class="fullwidth60" width="100%" src="http://payments.signaturecorp.com:9091/Content/themes/base/images/logo_new.png" height="auto"></a></td></tr></table><table border="0" cellpadding="0" cellspacing="0" align="right" ><tr><td valign="top"  align="center" ><p style="color:#1d3964; padding:0; margin:0;  font-size:11px; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px; "><span><b style="text-decoration: none;color: #1d3964;">1201 LAKESIDE PARKWAY, STE 150</b></span><span style=" color: #0c763c; font-size: 14px">&nbsp;<b>|</b>&nbsp;</span><span><b style="text-decoration: none;color: #1d3964;">FLOWER MOUND, TX 70028</b></span><span style=" color: #0c763c;font-size: 14px">&nbsp;<b>|</b>&nbsp;</span><span><b style="text-decoration: none;color: #1d3964;">signaturecorp.com</b></span></p></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center" height="40" ></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="right" ><tr><td valign="top"  align="right" ></td><td valign="top"  align="right"><table border="0" cellpadding="0" cellspacing="0"  bgcolor="#f6f6f6" style="background-color: #f6f6f6" align="right" ><tr><td valign="top"  align="right" height="10" ></td></tr><tr><td valign="top"  align="right" width="20" ></td><td valign="top"  align="right" ><p style="color:#1d3964; padding:0; margin:0;  font-size:18px; font-family: Arial, sans-serif, Helvetica; text-align:center; line-height:25px; ">Authentication Code: '+ randomNumber +'</p></td><td valign="top" align="right" width="20" ></td></tr><tr><td valign="top"  align="right" height="10" ></td></tr></table></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="25"></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center" ><p style="color:#000; padding:0; margin:0;  font-size:14px; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px;"></p></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="25"></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center" ><p style="color:#000; padding:0; margin:0;  font-size:14px; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px; "></p></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="25"></td></tr></table></td></tr><tr><td width="100%" valign="top" align="center"><table cellspacing="0" cellpadding="0" border="0" align="left"><tbody><tr><td valign="top" align="center"><a href="http://admin.signaturecorp.com/payment/CreditShare_Authorization/'+EncodedNumber+'" style="color:#000; padding:0; margin:0;  font-size:20px; text-decoration:underline !important; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px; font-weight: bold;">Click here to enter Details.</a></td></tr></tbody></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="25"></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="left" ><p style="color:#000; padding:0; margin:0;  font-size:14px; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px; ">If you have any questions or concerns, please feel free to reach out to your dedicated sales representative and they will be happy to assist you.</p></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="25"></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="left" ><tr><td valign="top"  align="center" ><p style="color:#000; padding:0; margin:0;  font-size:14px; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px; ">Thank you for your business!</p></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="25"></td></tr></table></td></tr><tr><td valign="top"  align="left" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="left" ><tr><td valign="top"  align="left" ><p style="color:#000; padding:0; margin:0;  font-size:14px; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px;">Signature Systems Group<br/>972-684-5736</p></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="50"></td></tr></table></td></tr></table></td><td valign="top"  align="center" width="30" bgcolor="#fff" style="background-color: #fff">&nbsp;</td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%" height="18">&nbsp;</td></tr></table></table></td></tr></td></tr><tr><td style="height:30px;">&nbsp;</td></tr></table></center></body></html>';
+               // String HtmlBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><meta name="viewport" content="initial-scale=1, maximum-scale=1">  <meta name="viewport" content="width=device-width"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="format-detection" content="telephone=no" /><title>Index 2</title></head><body bgcolor="#fff" leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0"><center style="background-color:#fff;"><table background="#fff" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable" style="table-layout: fixed;max-width:100% !important;width: 100% !important;min-width: 100% !important;"><style type="text/css">html { background-color:#fff; margin:0; padding:0; }body, #bodyTable, #bodyCell, #bodyCell{height:100% !important; margin:0; padding:0; width:100% !important;font-family:Verdana, arial, sans-serif;}table{border-collapse:collapse;}table[id=bodyTable]{width:100%!important;margin:auto;max-width:700px!important;color:#7A7A7A;font-weight:normal;}img, a img{border:0; outline:none; text-decoration:none;height:auto; line-height:100%;}a {text-decoration:none !important;}h1, h2, h3, h4, h5, h6{color:#5F5F5F; font-weight:normal; font-family:Verdana, arial, sans-serif; font-size:20px; line-height:125%; text-align:Left;letter-spacing:normal;margin-top:0;margin-right:0;margin-bottom:10px;margin-left:0;padding-top:0;padding-bottom:0;padding-left:0;padding-right:0;}.ReadMsgBody{width:100%;} .ExternalClass{width:100%;} .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div{line-height:100%;} table, td{mso-table-lspace:0pt;mso-table-rspace:0pt;}#outlook a{padding:0;} img{-ms-interpolation-mode: bicubic;display:block;outline:none; text-decoration:none;}body, table, td, p, a, li, blockquote{-ms-text-size-adjust:100%; -webkit-text-size-adjust:100%; font-weight:normal!important;}.ExternalClass td[class="ecxflexibleContainerBox"] h3 {padding-top: 10px !important;} h1{display:block;font-size:26px;font-style:normal;font-weight:normal;line-height:100%;}h2{display:block;font-size:20px;font-style:normal;font-weight:normal;line-height:120%;}h3{display:block;font-size:17px;font-style:normal;font-weight:normal;line-height:110%;}h4{display:block;font-size:18px;font-style:italic;font-weight:normal;line-height:100%;}.flexibleImage{height:auto;}.linkRemoveBorder{border-bottom:0 !important;}table[class=flexibleContainerCellDivider] {padding-bottom:0 !important;padding-top:0 !important;}body, #bodyTable{background-color:#fff;}#emailHeader{background-color:#E1E1E1;}#emailBody{background-color:#fff;}#emailFooter{background-color:#E1E1E1;}.nestedContainer{background-color:#F8F8F8; border:1px solid #CCCCCC;}.emailButton{background-color:#205478; border-collapse:separate;}.buttonContent{color:#FFFFFF; font-family:Verdana, arial, sans-serif; font-size:18px; font-weight:bold; line-height:100%; padding:15px; text-align:center;}.buttonContent a{color:#FFFFFF; display:block; text-decoration:none!important; border:0!important;}.emailCalendar{background-color:#FFFFFF; border:1px solid #CCCCCC;}.emailCalendarMonth{background-color:#fff; color:#FFFFFF; font-family:Verdana, arial, sans-serif; font-size:16px; font-weight:bold; padding-top:10px; padding-bottom:10px; text-align:center;}.emailCalendarDay{color:#205478; font-family:Verdana, arial, sans-serif; font-size:60px; font-weight:bold; line-height:100%; padding-top:20px; padding-bottom:20px; text-align:center;}.imageContentText {margin-top: 10px;line-height:0;}.imageContentText a {line-height:0;}#invisibleIntroduction {display:none !important;} span[class=ios-color-hack] a {color:#275100!important;text-decoration:none!important;} span[class=ios-color-hack2] a {color:#205478!important;text-decoration:none!important;}span[class=ios-color-hack3] a {color:#8B8B8B!important;text-decoration:none!important;}.a[href^="tel"], a[href^="sms"] {text-decoration:none!important;color:#606060!important;pointer-events:none!important;cursor:default!important;}.mobile_link a[href^="tel"], .mobile_link a[href^="sms"] {text-decoration:none!important;color:#606060!important;pointer-events:auto!important;cursor:default!important;}.pl{ padding-left:40px;}.pr{ padding-right:40px;}.ml{ margin-left:10px;}.pt30{ padding-top:30px;}.pb30{ padding-bottom:30px;}.mubarak_ho_text{ max-width:355px; width:70%;}.boder_out{ border:none !important; outline:0px !important;}a { text-decoration:none !important}@media only screen and (max-width: 680px){body{width:100% !important; min-width:100% !important;} /* Force iOS Mail to render the email at full width. */table[id="emailHeader"],table[id="emailBody"],table[id="emailFooter"],table[class="flexibleContainer"],td[class="flexibleContainerCell"] {width:100% !important; padding:0 !important; margin:0 !important;}td[class="flexibleContainerBox"], td[class="flexibleContainerBox"] table {display: block;width: 100%;text-align: left; padding:0 !important; margin:0!important;}td[class="imageContent"] img {height:auto !important; width:100% !important; max-width:100% !important; }img[class="flexibleImage"]{height:auto !important; width:100% !important;max-width:100% !important;}img[class="flexibleImageSmall"]{height:auto !important; width:auto !important;}table[class="flexibleContainerBoxNext"]{padding-top: 10px !important;}table[class="emailButton"]{width:100% !important;}td[class="buttonContent"]{padding:0 !important;}img[class="fullwidth"]{ width:100% !important; height:auto !important; padding:0 !important; margin:0 !important; }img[class="fullwidth80"]{ width:80% !important; height:auto}img[class="fullwidth60"]{ width:65% !important; height:auto}img[class="fullwidth40"]{ width:40% !important; height:auto}td[class="less_padding"]{ padding-left:20px !important; padding-right:20px !important;}}@media only screen and (-webkit-device-pixel-ratio:.75){}@media only screen and (-webkit-device-pixel-ratio:1){  }@media only screen and (-webkit-device-pixel-ratio:1.5){table{ width:100% !important}td{ width:100% !important}table[class="iph_width"]{ width:100% !important}td[class="iph_width"]{ width:100% !important}}@media only screen and (min-device-width : 320px) and (max-device-width:680px) {img[class="fullwidth"]{ width:100% !important; height:auto !important; padding:0 !important; margin:0 !important;}img[class="fullwidth90"]{ width:90% !important; height:auto}img[class="fullwidth80"]{ width:80% !important; height:auto}img[class="fullwidth60"]{ width:65% !important; height:auto}img[class="fullwidth50"]{ width:50% !important; height:auto}img[class="fullwidth40"]{ width:40% !important; height:auto}img[class="dip_grn_img"]{ margin-right:30px!important;}img[class="light_grn_img"]{ margin-left:30px!important;}table{ width:100% !important}table[class="iph_width"]{ width:100% !important}td[class="iph_width"]{ width:100% !important}td[class="less_padding"]{ padding-left:20px !important; padding-right:20px !important;}p[class="smll_padding"]{ padding-top:8px; padding-bottom:8px;}.pl{ padding-left:none !important;}.pr{ padding-right:none !important;}.pd_l{ padding-left:20px !important;}.pd_r{ padding-left:20px !important;}.ml{ margin-left:0;}}@media only screen and (min-width : 320px) and (max-width:680px) {img[class="fullwidth"]{ width:100% !important; height:auto !important; padding:0 !important; margin:0 !important;}img[class="fullwidth90"]{ width:90% !important; height:auto}img[class="fullwidth80"]{ width:80% !important; height:auto}img[class="fullwidth60"]{ width:65% !important; height:auto}img[class="fullwidth50"]{ width:50% !important; height:auto}img[class="fullwidth40"]{ width:40% !important; height:auto}img[class="dip_grn_img"]{ margin-right:30px!important;}img[class="light_grn_img"]{ margin-left:30px!important;}table{ width:100% !important}table[class="iph_width"]{ width:100% !important}td[class="iph_width"]{ width:100% !important}td[class="less_padding"]{ padding-left:20px !important; padding-right:20px !important;}p[class="smll_padding"]{ padding-top:8px; padding-bottom:8px;}.pl{ padding-left:none !important;}.pr{ padding-right:none !important;}.pd_l{ padding-left:20px !important;}.pd_r{ padding-left:20px !important;}.ml{ margin-left:0;}}@media (max-width: 320px){.pt30{ padding-top:10px;}.pb30{ padding-bottom:10px;}.try_blue_btn{ width:70%;}}</style><tr><td style="height:30px;">&nbsp;</td></tr><tr><td align="center" valign="top" id="bodyCell" ><table  border="0" cellpadding="0" cellspacing="0" width="700" ></table><table bgcolor="#FFFFFF"  border="0" cellpadding="0" cellspacing="0" width="700" id="emailBody">   <tr><td align="center" valign="top" style="border:#efebe4 1px solid;"><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td valign="top"  align="center" width="100%" height="30" bgcolor="#1c3760" style="background-color: #1c3760"></td></tr><tr><td valign="top"  align="center" width="100%" height="30" bgcolor="#fff" style="background-color: #fff">&nbsp;</td></tr><tr><td valign="top"  align="center" width="100%" bgcolor="#fff" style="background-color: #fff"><table border="0" cellpadding="0" cellspacing="0" width="100%" ><tr><td valign="top"  align="center" width="30"  bgcolor="#fff" style="background-color: #fff">&nbsp;</td><td valign="top"  align="center" width="630" bgcolor="#fff" style="background-color: #fff"><table border="0" cellpadding="0" cellspacing="0" width="100%" ><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" width="160" align="left" ><tr><td valign="top"  align="center" ><a href="https://signaturecorp.com/"><img class="fullwidth60" width="100%" src="http://payments.signaturecorp.com/Content/themes/base/images/logo_new.png" height="auto"></a></td></tr></table><table border="0" cellpadding="0" cellspacing="0" align="right" ><tr><td valign="top"  align="center" ><p style="color:#1d3964; padding:0; margin:0;  font-size:11px; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px; "><span><b style="text-decoration: none;color: #1d3964;">1201 LAKESIDE PARKWAY, STE 150</b></span><span style=" color: #0c763c; font-size: 14px">&nbsp;<b>|</b>&nbsp;</span><span><b style="text-decoration: none;color: #1d3964;">FLOWER MOUND, TX 70028</b></span><span style=" color: #0c763c;font-size: 14px">&nbsp;<b>|</b>&nbsp;</span><span><b style="text-decoration: none;color: #1d3964;">signaturecorp.com</b></span></p></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center" height="40" ></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="right" ><tr><td valign="top"  align="right" ></td><td valign="top"  align="right"><table border="0" cellpadding="0" cellspacing="0"  bgcolor="#f6f6f6" style="background-color: #f6f6f6" align="right" ><tr><td valign="top"  align="right" height="10" ></td></tr><tr><td valign="top"  align="right" width="20" ></td><td valign="top"  align="right" ><p style="color:#1d3964; padding:0; margin:0;  font-size:18px; font-family: Arial, sans-serif, Helvetica; text-align:center; line-height:25px; ">Authentication Code: '+ randomNumber +'</p></td><td valign="top" align="right" width="20" ></td></tr><tr><td valign="top"  align="right" height="10" ></td></tr></table></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="25"></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center" ><p style="color:#000; padding:0; margin:0;  font-size:14px; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px;"></p></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="25"></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center" ><p style="color:#000; padding:0; margin:0;  font-size:14px; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px; "></p></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="25"></td></tr></table></td></tr><tr><td width="100%" valign="top" align="center"><table cellspacing="0" cellpadding="0" border="0" align="left"><tbody><tr><td valign="top" align="center"><a href="http://146.88.29.126:9091/payment/CreditShare_Authorization/'+EncodedNumber+'" style="color:#000; padding:0; margin:0;  font-size:20px; text-decoration:underline !important; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px; font-weight: bold;">Click here to enter Details.</a></td></tr></tbody></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="25"></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="left" ><p style="color:#000; padding:0; margin:0;  font-size:14px; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px; ">If you have any questions or concerns, please feel free to reach out to your dedicated sales representative and they will be happy to assist you.</p></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="25"></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="left" ><tr><td valign="top"  align="center" ><p style="color:#000; padding:0; margin:0;  font-size:14px; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px; ">Thank you for your business!</p></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="25"></td></tr></table></td></tr><tr><td valign="top"  align="left" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="left" ><tr><td valign="top"  align="left" ><p style="color:#000; padding:0; margin:0;  font-size:14px; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px;">Signature Systems Group<br/>972-684-5736</p></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="50"></td></tr></table></td></tr></table></td><td valign="top"  align="center" width="30" bgcolor="#fff" style="background-color: #fff">&nbsp;</td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%" height="18">&nbsp;</td></tr></table></table></td></tr></td></tr><tr><td style="height:30px;">&nbsp;</td></tr></table></center></body></html>';
+            /*Test 75 Server*/  //  String HtmlBody = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><meta name="viewport" content="initial-scale=1, maximum-scale=1">  <meta name="viewport" content="width=device-width"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="format-detection" content="telephone=no" /><title>Index 2</title></head><body bgcolor="#fff" leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0"><center style="background-color:#fff;"><table background="#fff" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable" style="table-layout: fixed;max-width:100% !important;width: 100% !important;min-width: 100% !important;"><style type="text/css">html { background-color:#fff; margin:0; padding:0; }body, #bodyTable, #bodyCell, #bodyCell{height:100% !important; margin:0; padding:0; width:100% !important;font-family:Verdana, arial, sans-serif;}table{border-collapse:collapse;}table[id=bodyTable]{width:100%!important;margin:auto;max-width:700px!important;color:#7A7A7A;font-weight:normal;}img, a img{border:0; outline:none; text-decoration:none;height:auto; line-height:100%;}a {text-decoration:none !important;}h1, h2, h3, h4, h5, h6{color:#5F5F5F; font-weight:normal; font-family:Verdana, arial, sans-serif; font-size:20px; line-height:125%; text-align:Left;letter-spacing:normal;margin-top:0;margin-right:0;margin-bottom:10px;margin-left:0;padding-top:0;padding-bottom:0;padding-left:0;padding-right:0;}.ReadMsgBody{width:100%;} .ExternalClass{width:100%;} .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div{line-height:100%;} table, td{mso-table-lspace:0pt;mso-table-rspace:0pt;}#outlook a{padding:0;} img{-ms-interpolation-mode: bicubic;display:block;outline:none; text-decoration:none;}body, table, td, p, a, li, blockquote{-ms-text-size-adjust:100%; -webkit-text-size-adjust:100%; font-weight:normal!important;}.ExternalClass td[class="ecxflexibleContainerBox"] h3 {padding-top: 10px !important;} h1{display:block;font-size:26px;font-style:normal;font-weight:normal;line-height:100%;}h2{display:block;font-size:20px;font-style:normal;font-weight:normal;line-height:120%;}h3{display:block;font-size:17px;font-style:normal;font-weight:normal;line-height:110%;}h4{display:block;font-size:18px;font-style:italic;font-weight:normal;line-height:100%;}.flexibleImage{height:auto;}.linkRemoveBorder{border-bottom:0 !important;}table[class=flexibleContainerCellDivider] {padding-bottom:0 !important;padding-top:0 !important;}body, #bodyTable{background-color:#fff;}#emailHeader{background-color:#E1E1E1;}#emailBody{background-color:#fff;}#emailFooter{background-color:#E1E1E1;}.nestedContainer{background-color:#F8F8F8; border:1px solid #CCCCCC;}.emailButton{background-color:#205478; border-collapse:separate;}.buttonContent{color:#FFFFFF; font-family:Verdana, arial, sans-serif; font-size:18px; font-weight:bold; line-height:100%; padding:15px; text-align:center;}.buttonContent a{color:#FFFFFF; display:block; text-decoration:none!important; border:0!important;}.emailCalendar{background-color:#FFFFFF; border:1px solid #CCCCCC;}.emailCalendarMonth{background-color:#fff; color:#FFFFFF; font-family:Verdana, arial, sans-serif; font-size:16px; font-weight:bold; padding-top:10px; padding-bottom:10px; text-align:center;}.emailCalendarDay{color:#205478; font-family:Verdana, arial, sans-serif; font-size:60px; font-weight:bold; line-height:100%; padding-top:20px; padding-bottom:20px; text-align:center;}.imageContentText {margin-top: 10px;line-height:0;}.imageContentText a {line-height:0;}#invisibleIntroduction {display:none !important;} span[class=ios-color-hack] a {color:#275100!important;text-decoration:none!important;} span[class=ios-color-hack2] a {color:#205478!important;text-decoration:none!important;}span[class=ios-color-hack3] a {color:#8B8B8B!important;text-decoration:none!important;}.a[href^="tel"], a[href^="sms"] {text-decoration:none!important;color:#606060!important;pointer-events:none!important;cursor:default!important;}.mobile_link a[href^="tel"], .mobile_link a[href^="sms"] {text-decoration:none!important;color:#606060!important;pointer-events:auto!important;cursor:default!important;}.pl{ padding-left:40px;}.pr{ padding-right:40px;}.ml{ margin-left:10px;}.pt30{ padding-top:30px;}.pb30{ padding-bottom:30px;}.mubarak_ho_text{ max-width:355px; width:70%;}.boder_out{ border:none !important; outline:0px !important;}a { text-decoration:none !important}@media only screen and (max-width: 680px){body{width:100% !important; min-width:100% !important;} /* Force iOS Mail to render the email at full width. */table[id="emailHeader"],table[id="emailBody"],table[id="emailFooter"],table[class="flexibleContainer"],td[class="flexibleContainerCell"] {width:100% !important; padding:0 !important; margin:0 !important;}td[class="flexibleContainerBox"], td[class="flexibleContainerBox"] table {display: block;width: 100%;text-align: left; padding:0 !important; margin:0!important;}td[class="imageContent"] img {height:auto !important; width:100% !important; max-width:100% !important; }img[class="flexibleImage"]{height:auto !important; width:100% !important;max-width:100% !important;}img[class="flexibleImageSmall"]{height:auto !important; width:auto !important;}table[class="flexibleContainerBoxNext"]{padding-top: 10px !important;}table[class="emailButton"]{width:100% !important;}td[class="buttonContent"]{padding:0 !important;}img[class="fullwidth"]{ width:100% !important; height:auto !important; padding:0 !important; margin:0 !important; }img[class="fullwidth80"]{ width:80% !important; height:auto}img[class="fullwidth60"]{ width:65% !important; height:auto}img[class="fullwidth40"]{ width:40% !important; height:auto}td[class="less_padding"]{ padding-left:20px !important; padding-right:20px !important;}}@media only screen and (-webkit-device-pixel-ratio:.75){}@media only screen and (-webkit-device-pixel-ratio:1){  }@media only screen and (-webkit-device-pixel-ratio:1.5){table{ width:100% !important}td{ width:100% !important}table[class="iph_width"]{ width:100% !important}td[class="iph_width"]{ width:100% !important}}@media only screen and (min-device-width : 320px) and (max-device-width:680px) {img[class="fullwidth"]{ width:100% !important; height:auto !important; padding:0 !important; margin:0 !important;}img[class="fullwidth90"]{ width:90% !important; height:auto}img[class="fullwidth80"]{ width:80% !important; height:auto}img[class="fullwidth60"]{ width:65% !important; height:auto}img[class="fullwidth50"]{ width:50% !important; height:auto}img[class="fullwidth40"]{ width:40% !important; height:auto}img[class="dip_grn_img"]{ margin-right:30px!important;}img[class="light_grn_img"]{ margin-left:30px!important;}table{ width:100% !important}table[class="iph_width"]{ width:100% !important}td[class="iph_width"]{ width:100% !important}td[class="less_padding"]{ padding-left:20px !important; padding-right:20px !important;}p[class="smll_padding"]{ padding-top:8px; padding-bottom:8px;}.pl{ padding-left:none !important;}.pr{ padding-right:none !important;}.pd_l{ padding-left:20px !important;}.pd_r{ padding-left:20px !important;}.ml{ margin-left:0;}}@media only screen and (min-width : 320px) and (max-width:680px) {img[class="fullwidth"]{ width:100% !important; height:auto !important; padding:0 !important; margin:0 !important;}img[class="fullwidth90"]{ width:90% !important; height:auto}img[class="fullwidth80"]{ width:80% !important; height:auto}img[class="fullwidth60"]{ width:65% !important; height:auto}img[class="fullwidth50"]{ width:50% !important; height:auto}img[class="fullwidth40"]{ width:40% !important; height:auto}img[class="dip_grn_img"]{ margin-right:30px!important;}img[class="light_grn_img"]{ margin-left:30px!important;}table{ width:100% !important}table[class="iph_width"]{ width:100% !important}td[class="iph_width"]{ width:100% !important}td[class="less_padding"]{ padding-left:20px !important; padding-right:20px !important;}p[class="smll_padding"]{ padding-top:8px; padding-bottom:8px;}.pl{ padding-left:none !important;}.pr{ padding-right:none !important;}.pd_l{ padding-left:20px !important;}.pd_r{ padding-left:20px !important;}.ml{ margin-left:0;}}@media (max-width: 320px){.pt30{ padding-top:10px;}.pb30{ padding-bottom:10px;}.try_blue_btn{ width:70%;}}</style><tr><td style="height:30px;">&nbsp;</td></tr><tr><td align="center" valign="top" id="bodyCell" ><table  border="0" cellpadding="0" cellspacing="0" width="700" ></table><table bgcolor="#FFFFFF"  border="0" cellpadding="0" cellspacing="0" width="700" id="emailBody">   <tr><td align="center" valign="top" style="border:#efebe4 1px solid;"><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td valign="top"  align="center" width="100%" height="30" bgcolor="#1c3760" style="background-color: #1c3760"></td></tr><tr><td valign="top"  align="center" width="100%" height="30" bgcolor="#fff" style="background-color: #fff">&nbsp;</td></tr><tr><td valign="top"  align="center" width="100%" bgcolor="#fff" style="background-color: #fff"><table border="0" cellpadding="0" cellspacing="0" width="100%" ><tr><td valign="top"  align="center" width="30"  bgcolor="#fff" style="background-color: #fff">&nbsp;</td><td valign="top"  align="center" width="630" bgcolor="#fff" style="background-color: #fff"><table border="0" cellpadding="0" cellspacing="0" width="100%" ><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" width="160" align="left" ><tr><td valign="top"  align="center" ><a href="https://signaturecorp.com/"><img class="fullwidth60" width="100%" src="http://payments.signaturecorp.com/Content/themes/base/images/logo_new.png" height="auto"></a></td></tr></table><table border="0" cellpadding="0" cellspacing="0" align="right" ><tr><td valign="top"  align="center" ><p style="color:#1d3964; padding:0; margin:0;  font-size:11px; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px; "><span><b style="text-decoration: none;color: #1d3964;">1201 LAKESIDE PARKWAY, STE 150</b></span><span style=" color: #0c763c; font-size: 14px">&nbsp;<b>|</b>&nbsp;</span><span><b style="text-decoration: none;color: #1d3964;">FLOWER MOUND, TX 70028</b></span><span style=" color: #0c763c;font-size: 14px">&nbsp;<b>|</b>&nbsp;</span><span><b style="text-decoration: none;color: #1d3964;">signaturecorp.com</b></span></p></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center" height="40" ></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="right" ><tr><td valign="top"  align="right" ></td><td valign="top"  align="right"><table border="0" cellpadding="0" cellspacing="0"  bgcolor="#f6f6f6" style="background-color: #f6f6f6" align="right" ><tr><td valign="top"  align="right" height="10" ></td></tr><tr><td valign="top"  align="right" width="20" ></td><td valign="top"  align="right" ><p style="color:#1d3964; padding:0; margin:0;  font-size:18px; font-family: Arial, sans-serif, Helvetica; text-align:center; line-height:25px; ">Authentication Code: '+ randomNumber +'</p></td><td valign="top" align="right" width="20" ></td></tr><tr><td valign="top"  align="right" height="10" ></td></tr></table></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="25"></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center" ><p style="color:#000; padding:0; margin:0;  font-size:14px; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px;"></p></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="25"></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center" ><p style="color:#000; padding:0; margin:0;  font-size:14px; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px; "></p></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="25"></td></tr></table></td></tr><tr><td width="100%" valign="top" align="center"><table cellspacing="0" cellpadding="0" border="0" align="left"><tbody><tr><td valign="top" align="center"><a href="http://146.88.29.75:9082/payment/CreditShare_Authorization/'+EncodedNumber+'" style="color:#000; padding:0; margin:0;  font-size:20px; text-decoration:underline !important; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px; font-weight: bold;">Click here to enter Details.</a></td></tr></tbody></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="25"></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="left" ><p style="color:#000; padding:0; margin:0;  font-size:14px; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px; ">If you have any questions or concerns, please feel free to reach out to your dedicated sales representative and they will be happy to assist you.</p></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="25"></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="left" ><tr><td valign="top"  align="center" ><p style="color:#000; padding:0; margin:0;  font-size:14px; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px; ">Thank you for your business!</p></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="25"></td></tr></table></td></tr><tr><td valign="top"  align="left" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="left" ><tr><td valign="top"  align="left" ><p style="color:#000; padding:0; margin:0;  font-size:14px; font-family: Arial, sans-serif, Helvetica; text-align:left; line-height:25px;">Signature Systems Group<br/>972-684-5736</p></td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%"><table border="0" cellpadding="0" cellspacing="0" align="center" ><tr><td valign="top"  align="center"  height="50"></td></tr></table></td></tr></table></td><td valign="top"  align="center" width="30" bgcolor="#fff" style="background-color: #fff">&nbsp;</td></tr></table></td></tr><tr><td valign="top"  align="center" width="100%" height="18">&nbsp;</td></tr></table></table></td></tr></td></tr><tr><td style="height:30px;">&nbsp;</td></tr></table></center></body></html>';
+                    ///Send Mail
+                    List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+                mail.setToAddresses(EmailIds);mail.setHtmlBody(HtmlBody);
+                mail.setSubject(MsgSub);
+                mails.add(mail);
+                Messaging.sendEmail(mails); 
+                
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Email Send Successfully .'));
+                //}
+                /*else
+                {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING,'MsNavId Does not exist.'));
+                }*/
+            }
+            else
+            {
+                ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING,'Contact must be created .'));
+            }
+        }
+        else
+        {
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING,'Please provide a Account Billing Contact to Proceed.'));
+        }
+        }
+        else
+        {
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING,'"Credit & Referral Check" is already processed.'));
+        }
+        /*}
+else
+{
+ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING,'Account cannot be Prepaid .'));
+}*/
+        
+    }
+    //Random Number
+    public string generateRandNum()
+    {        
+        final String chars = '0123456789'; 
+        String randStr = ''; 
+        while (randStr.length() < 4) 
+        { 
+            Integer idx = Math.mod(Math.abs(Crypto.getRandomInteger()), chars.length()); 
+            randStr += chars.substring(idx, idx+1); 
+        }
+        return randStr;
+    }
+    // Encoded Number
+    public string generateEncodedNumber()
+    {
+        
+        String chars1 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; 
+        String encodedData = ''; 
+        while (encodedData.length() < 25) 
+        { 
+            Integer idx = Math.mod(Math.abs(Crypto.getRandomInteger()), chars1.length()); 
+            encodedData += chars1.substring(idx, idx+1); 
+        }
+        return encodedData;
+    }
+    public void AddMailPusher(string randStr,string encodedData)
+    {
+        string response = 'true';
+        String AccName;
+        String MsNavId;
+        String AccMsId;
+        Account_Mail_Pusher__c msinfoOne=null;
+        
+        
+        //List<Account_Mail_Pusher__c> tempSO = [select ID,Account_Id__c,Private_Key__c,Security_Code__c,Account_Name__c from Account_Mail_Pusher__c where Account_Id__c=:AccountId];
+        //AccName = [SELECT Name from Account where Id =: AccountId].Name;
+        //MsNavId = [SELECT MSNAV_Id__c from Account where Id =: AccountId].MSNAV_Id__c;
+        //MsNavId = [SELECT MSNAV_Id__c from Account where Id =: AccountId].MSNAV_Id__c;
+        
+        //AccName = [SELECT Name from Account where MSNAV_Id__c =: MsNavId].Name;
+        
+        List<Account_Mail_Pusher__c> tempSO = [select ID,Account_Id__c,Private_Key__c,AccMsNavId__c,Security_Code__c,Account_Name__c from Account_Mail_Pusher__c where Account_Id__c=:AccountId];
+        AccName = [SELECT Name from Account where Id =: AccountId].Name;
+        AccMsId = [SELECT MSNAV_Id__c from Account where Id =: AccountId].MSNAV_Id__c;
+        
+        if(tempSO.size()>0)
+        {
+            msinfoOne=tempSO.get(0);
+            msinfoOne.Account_Name__c=AccName;
+            msinfoOne.Security_Code__c=randStr;               
+            msinfoOne.Private_Key__c=encodedData;
+            msinfoOne.Account_Id__c=AccountId;
+            if(AccMsId != '')
+            {
+                msinfoOne.AccMsNavId__c=AccMsId;
+            }
+            update msinfoOne;
+        }
+        else
+        {
+            
+            Account_Mail_Pusher__c paymentObj = new Account_Mail_Pusher__c();
+            paymentObj.Security_Code__c=randStr;
+            paymentObj.Private_Key__c=encodedData;
+            if(AccMsId != ''){
+                paymentObj.AccMsNavId__c=AccMsId;
+            }
+            paymentObj.Account_Id__c=AccountId;
+            paymentObj.Account_Name__c=AccName;
+            
+            Insert paymentObj;
+            
+            
+            
+            System.debug('paymentObj insert'+paymentObj);
+            
+        }
+    }
+    
+    
+    
+    public string UpdateAccountStatus()
+    {
+        string response;
+        String AccName;
+        Account msinfoOne=null;
+        
+        List<Account> tempSO = [select ID,Link_Status__c from Account where Id=:AccountId];  
+        system.debug('<---->tempSO'+tempSO);
+        if(tempSO.size()>0)
+        {
+            msinfoOne=tempSO.get(0);
+            msinfoOne.Link_Status__c='Credit Check Link Sent';   
+            update msinfoOne;
+        }
+        
+        return response;
+    }
+    
+    
+}
