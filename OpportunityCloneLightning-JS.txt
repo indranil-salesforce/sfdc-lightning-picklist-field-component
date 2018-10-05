@@ -1,0 +1,122 @@
+({
+	doInit : function(component, event, helper) {
+        
+        //helper.turnOnSpinner(component);
+        
+        var action = component.get("c.getOpportunity");
+        action.setParams({
+          "opporId": component.get("v.recordId")
+        });
+        action.setCallback(this, function(a) {
+            component.set("v.opportunity", a.getReturnValue());
+            //confirm("Callback Status : "+a.getReturnValue());
+            
+        });
+        
+        //=======Location Management.
+        
+        
+        var opportunityLocation=component.get("c.getLocationPickValues");
+		
+		opportunityLocation.setCallback(this, function(response){
+			component.set("v.locationCode", response.getReturnValue());
+		});
+        
+        
+        //============Line Items.
+        
+        var actionLineItems = component.get("c.getAllLineItems");
+        actionLineItems.setParams({
+            "recordId": component.get("v.recordId")
+        });
+        
+        actionLineItems.setCallback(this, function(response) {
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                helper.toggleSpinner(component);
+                component.set("v.lineItems", response.getReturnValue());
+            }
+            
+        });
+        
+        
+        $A.enqueueAction(action);
+        $A.enqueueAction(opportunityLocation);
+        $A.enqueueAction(actionLineItems);
+
+        
+	},
+    
+    cloneOpportunity : function(component, event, helper) {
+       var createRecordEvent = $A.get("e.force:createRecord");
+       createRecordEvent.setParams({
+           "entityApiName": "Contact",
+           "defaultFieldValues": {
+                 'Phone' : '415-240-6590',
+                 'Account' : '001xxxxxxxxxxxxxxx'
+            }
+       });
+        
+      $A.get("e.force:closeQuickAction").fire();
+      createRecordEvent.fire();
+	},
+    
+    saveAll : function(component, event, helper) {
+        
+        //saveAllData(ID recordId,final String opportunitydata,final String opportuLine)
+        
+        var action = component.get("c.saveAllData");
+        action.setParams({
+          "recordId": component.get("v.recordId"),
+          "opportunitydata": JSON.stringify(component.get("v.opportunity")),
+          "opportuLine": JSON.stringify(component.get("v.lineItems"))
+        });
+        
+        //confirm(JSON.stringify(component.get("v.opportunity")));
+        
+        action.setCallback(this, function(a) {
+            
+            $A.get("e.force:closeQuickAction").fire();
+            
+            var responsE=a.getReturnValue();
+            if(responsE[1]=="success"){
+            }else{
+                confirm(responsE[1]);
+            }
+            
+            var urlEvent = $A.get("e.force:navigateToURL");
+            urlEvent.setParams({
+              "url": "#/sObject/"+responsE[0]+"/view"
+            });
+            urlEvent.fire(); 
+                
+            });
+        
+        $A.enqueueAction(action);
+        
+	},
+    
+    removeLineItem: function(component, event, helper) {
+        //helper.turnOnSpinner(component);
+        var searchKey = event.getParam("opprLineItemsEvent");
+        var action = component.get("c.removeLineItems");
+        action.setParams({
+          "runningData": JSON.stringify(component.get("v.lineItems")),
+          "deletingOBJ": JSON.stringify(searchKey)
+        });
+      
+        action.setCallback(this, function(a) {
+            var state = a.getState();
+            if(state === 'SUCCESS'){
+                //helper.turnOffSpinner(component);
+                component.set("v.lineItems", a.getReturnValue());
+            }
+        });
+        
+        $A.enqueueAction(action);
+    },
+    closeMe : function(component, event, helper) {
+        $A.get("e.force:closeQuickAction").fire();
+    },
+    
+})

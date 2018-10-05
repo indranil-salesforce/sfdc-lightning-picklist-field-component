@@ -1,0 +1,121 @@
+<aura:component controller="AddProductController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+	
+    <aura:attribute name="recordId" type="Id" />
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>    
+    
+    <aura:attribute name="recordCount" type="String" />
+    <aura:attribute name="userCurrency" type="String" />
+    <aura:attribute name="totalInactive" type="String" />
+    <aura:attribute name="lineItemsAll" type="OpportunityLineItem[]"/>
+        
+    <div role="dialog" tabindex="-1" aria-labelledby="header43" aura:id="Modalbox" class="slds-modal slds-modal_large" style="top: 16% !important;">
+        <div class="slds-modal__container" style="width: 95%;">
+            <div class="slds-modal__header">
+                <lightning:layout >
+                    <lightning:layoutItem >
+                      <lightning:icon iconName="standard:opportunity" />
+                    </lightning:layoutItem>
+                    
+                        <lightning:layoutItem class="slds-m-left--small">
+                            
+                            <p class="slds-text-title--caps slds-line-height--reset">Manage Opportunity Line Items</p>
+                                
+                            <h1 class="slds-page-header__title slds-p-right--x-small">Opportunity Products</h1>
+                                
+                        </lightning:layoutItem>
+                </lightning:layout>
+                <lightning:layout >
+                    <lightning:layoutItem >
+                            
+                        <p class="slds-text-body--small">Price Book : Standard Price Book • Currency : {!v.userCurrency}</p>
+                            
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </div>
+            <div class="slds-modal__content slds-p-around--medium"> 
+                <div>
+                    <c:AddProductComponent recordId="{!v.recordId}"/>
+                </div>
+            </div>
+            <div class="slds-modal__footer">
+                <ui:button label="close" class="slds-button slds-button_destructive" press="{!c.closeModal}"/>
+            </div>
+        </div>
+    </div>
+    <div class="slds-backdrop " aura:id="Modalbackdrop"></div>
+
+    
+    <article class="slds-card">
+      <div class="slds-card__header slds-grid">
+        <header class="slds-media slds-media--center slds-has-flexi-truncate">
+            <div class="slds-media__figure" data-aura-rendered-by="12:2182;a">
+                <div class="extraSmall forceEntityIcon" style="background-color: #FCB95B" data-aura-class="forceEntityIcon">
+                    <span data-aura-rendered-by="2111:0" class="uiImage" data-aura-class="uiImage">
+                        <img data-aura-rendered-by="2109:0" src="https://signature.my.salesforce.com/img/icon/t4v35/standard/product_120.png" class="icon " alt="Products" title="Products"/>
+                        </span>
+                </div>
+            </div>
+            <div class="slds-media__body" data-aura-rendered-by="13:2182;a">
+                <h2 id="header" data-aura-rendered-by="14:2182;a">
+                    <a class="slds-card__header-link baseCard__header-title-container" href="javascript:void(0);" data-aura-rendered-by="15:2182;a">
+                        <span class="slds-text-heading--small slds-truncate slds-m-right--xx-small" title="Products" data-aura-rendered-by="16:2182;a">Products</span>
+                        <span class="slds-text-heading--small slds-shrink-none slds-m-right--xx-small" title="(6)" data-aura-rendered-by="19:2182;a"> ({!v.recordCount})</span>
+                    </a>
+                </h2>
+            </div>
+        </header>
+        <div class="slds-no-flex">
+           <ui:button label="Manage Products" class="lds-button slds-button_brand" press="{!c.openmodal}"/>
+        </div>
+      </div>
+      <div class="slds-card__body">
+        <table class="slds-table slds-table_bordered slds-no-row-hover slds-table_cell-buffer">
+          <thead>
+            <tr class="slds-text-title_caps">
+							<th class=" " scope="col" style="" title="Product">Product
+                                <span class="assistiveText slds-p-vertical_small"></span>
+                            </th>
+                			<!--<th class="initialSortAsc descending" scope="col" style="" title="Total Price">Location Code
+                                <span class="assistiveText"></span>
+                            </th>-->
+                            <th class="initialSortAsc " scope="col" style="" title="Description">Description
+                                <span class="assistiveText slds-p-vertical_small"></span>
+                            </th>
+                            <th class="initialSortAsc " scope="col" style="" title="Quantity">Quantity
+                                <span class="assistiveText slds-p-vertical_small">
+                                </span>
+                            </th>
+                			<th class="initialSortAsc descending" scope="col" style="" title="Total Price">Unit Price
+                                <span class="assistiveText"></span>
+                            </th>
+                            <th class="initialSortAsc descending" scope="col" style="" title="Total Price">Total Price
+                                <span class="assistiveText"></span>
+                            </th>
+                			
+                            <th class="actionColumnHeader " scope="col" style="">
+                                <span class="assistiveText slds-p-vertical_small">Action</span>
+                            </th>
+            </tr>
+          </thead>
+          <tbody>
+            <aura:iteration var="items" items="{!v.lineItemsAll}">
+                 <c:LineItemsRowClone lineItemsMain="{!items}"/>
+             </aura:iteration>
+          </tbody>
+        </table>
+      </div>
+      <footer class="slds-card__footer">
+          <a href="{!'#/sObject/'+v.recordId+'/rlName/OpportunityLineItems/view'}">View All 
+              <span class="slds-assistive-text">entity type</span>
+          </a>
+          
+         <span class="slds-badge slds-m-left--medium slds-shrink-none slds-align-middle site-badge--not-compatible" style="background:#B71C1C; color: #fff;" data-reactid="191">{!v.totalInactive}</span>
+
+        </footer>
+</article>
+    
+    
+    
+    
+    
+</aura:component>

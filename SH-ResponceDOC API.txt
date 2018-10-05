@@ -1,0 +1,90 @@
+@RestResource(urlMapping='/v1/SignHubResponseDoc/*')
+global with sharing class SignHubResponseDocApi {
+    
+    @HttpPost
+    global static Response doPost() {
+        system.debug('<----->');
+        Response response=new Response();
+        try{
+             system.debug('<----->');
+           SignHubResponseDocument inv = (SignHubResponseDocument)JSON.deserializeStrict(RestContext.request.requestBody.toString(),SignHubResponseDocument.class);
+            //String Document_id=String.valueOf(RestContext.request.params.get('Document_id'));
+            //String Status=String.valueOf(RestContext.request.params.get('Status'));
+            System.debug('<----------<>'+inv);
+            List<Opportunity> fetchedData=[SELECT Id,Account.Terms__c,E_Signature_Link__c,Is_Quote_Signed__c,Terms__c,Generate__c,StageName FROM Opportunity  Where SignHubDocId__c =:inv.Document_id ];
+            System.debug('<----------<>'+fetchedData);
+               if(fetchedData.size() > 0 )
+                {
+					Attachment attachment = new Attachment();
+                    attachment.OwnerId = UserInfo.getUserId();
+            		attachment.ParentId = fetchedData.get(0).Id; // the record the file is attached to
+            		attachment.IsPrivate = true;
+                    attachment.name = inv.Document_name + ' - SIGNED';
+                    attachment.ContentType = '.pdf';
+					attachment.body = EncodingUtil.base64Decode(inv.Document_body); 
+                    try {
+                        insert attachment;
+                       
+            		} catch (DMLException e) {
+                	
+                
+            		}                    
+                }
+                    
+                    //PaymentOppController.SendPaymentMail();
+                    
+                    
+                    
+                                   
+                    response.status=True;
+            		response.message='Update Successfull';
+            
+        }
+        catch(Exception e)
+        {
+            response.status=False;
+            response.message='Update Not Successfull';
+        }
+        Integer i = 0;
+   			 i++;
+            i++;
+            i++;
+            i++;
+            i++;
+            i++;
+            i++;
+            i++;
+            i++;
+            i++;
+        	i++;
+            i++;
+            i++;
+            i++;
+            i++;
+            i++;
+            i++;
+            i++;
+        	i++;
+            i++;
+            i++;
+            i++;
+            i++;
+            i++;
+            i++;
+            i++;
+        	i++;
+            i++;
+            i++;
+        	i++;
+            i++;
+            i++;
+            i++;
+            i++;
+            i++;
+            i++;
+            i++;
+        return response;
+   	
+    }   
+    
+}

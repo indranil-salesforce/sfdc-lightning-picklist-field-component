@@ -1,0 +1,18 @@
+global class RequestJson {
+    
+    public string Client{ get; set; }
+    public string CompanyCode{ get; set; }
+    public string CustomerCode{ get; set; }
+    public string DocCode{ get; set; }
+    public string DocType{ get; set; }
+    public string DocDate{ get; set; }
+   // Public string PostalCode{get; set;}
+   // Public String Amount{get; set;}
+   // public Boolean Opportunty_Tax_Exempt {get;set;}
+   // public Boolean Account_Tax_Exempt {get;set;}
+    
+    public List<RequestAddresses> Addresses { get; set; }
+    
+    public List<RequestLines> lines { get; set; }
+
+}

@@ -1,0 +1,18 @@
+trigger SyncSOToNav on NAV_Salesorder_Pusher__c (after insert) {
+	
+	
+	//List<Opportunity> needToPush=new List<Opportunity>();
+	
+	Set<Id> opporId=new Set<Id>();
+	
+	
+	for(NAV_Salesorder_Pusher__c tempPusher:trigger.new){
+		opporId.add(tempPusher.Opportunity_Id__c);
+	}
+	
+	
+	List<Opportunity> needToPush=[SELECT Id FROM Opportunity WHERE Id IN : opporId];
+
+		Database.executeBatch(new NAVSalesOrderPushSyncBatch(needToPush), 1);
+
+}

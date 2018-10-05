@@ -1,0 +1,1093 @@
+public class OppSignHubController {
+    
+    public String OppId {get;set;}
+    List<Opportunity_Contact_CUSTOM__c> OpportunityContactCUSTOMList= new List<Opportunity_Contact_CUSTOM__c>();
+    
+    public OppSignHubController(ApexPages.StandardController stdController) {
+        Opportunity oppor = (Opportunity)stdController.getRecord();
+        OppId=String.valueOf(oppor.ID);
+   	}
+    
+    public void SendSignatureMail()
+    {
+        String AccessToken;
+        integer DocId;
+        integer PackageId;
+        integer DocPages;
+        string SignerEmailId;
+        string OwnerId;
+        string ApproverEmailId;
+        
+         
+        OpportunityContactCUSTOMList =[select Contact__c from Opportunity_Contact_CUSTOM__c where Opportunity__c=:OppId and Billing_Contact__c=true];
+        System.debug('OpportunityContactCUSTOMList'+ OpportunityContactCUSTOMList);
+        
+        if(OpportunityContactCUSTOMList.size() > 0 )
+        {
+        	SignerEmailId = [select Email from Contact where Id=:OpportunityContactCUSTOMList.get(0).Contact__c].Email;
+        	// get owner id
+            OwnerId = [SELECT OwnerId FROM Opportunity where Id =: OppId].OwnerId;
+            ApproverEmailId = [SELECT Email FROM User where Id =: OwnerId].Email;
+            
+        System.debug('SignerEmailId'+SignerEmailId);
+        
+        PageReference p = new Pagereference('/apex/QuoteTemplateVF?Id='+OppId);
+	
+        Attachment attach = new Attachment();
+        Blob body;
+        if(!test.isRunningTest()){
+            body = p.getContentasPDF();
+        }else{
+            body=blob.valueOf('TestString');
+        }
+            system.debug('terst body+++++++++++++ '+p.getContentasPDF());
+        attach.Body = body;
+        attach.ContentType='.pdf';
+		/// get access token
+        AccessToken = authorization();
+            
+        ///Create new package
+        PackageId = CreatePackage(AccessToken);    
+		
+		/// create document id
+		DocId = CreateDocument(body, AccessToken,PackageId);
+            
+        //// get Document Page count
+		DocPages = GetDocPageCount(AccessToken, DocId, PackageId);    
+		
+		//// Assign document to template
+		AssignDocumentToTemplate(AccessToken, DocId, PackageId, DocPages);
+        
+        //// Assign Signer to Document
+        AddSignerToDoc(AccessToken, PackageId, SignerEmailId);
+            
+        //// Assign approver to Document
+        //AddApproverToDoc(AccessToken, PackageId, ApproverEmailId);
+        
+      	////Invokde Workflow
+		StartWorkflow(AccessToken, PackageId, DocId);    
+		
+       
+        }
+        else
+        {
+            system.debug('<------>');
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING,'Opportunity Contact must be created and Billing Contact checked.'));
+        }
+        
+       //return new PageReference('/' + OppId);
+    }
+    public string authorization()
+    {
+        Http h = new Http();
+        HttpRequest req = new HttpRequest();
+        String endpointURL= 'https://api.signinghub.com/authenticate';
+       // String body = 'grant_type=password&client_id=SignatureSystemsGroup&client_secret=4EB0B695772C740DE1F1E42C4B19F05820F3B436907FEF6CC935B4811222ADC5&username=cgick@signaturecorp.com&password=Signature1234@'; //Live
+		String body = 'grant_type=password&client_id=sayanportal&client_secret=0470AB99E83D2000A372982C73925A418AC55BB0E80E11C24B28ECF16130985E&username=sayan.basu@navsoft.in&password=Pfrfkzgf1@12';
+        system.debug('<===>endpointURL'+ endpointURL);
+        req.setEndpoint(endpointURL);
+        req.setMethod('POST');
+        req.setTimeout(120000);
+        req.setbody(body);
+        req.setHeader('Content-Type','application/x-www-form-urlencoded');
+        req.setHeader('Accept','application/json');
+        
+        HttpResponse res = h.send(req);
+        system.debug('<------------>responseusps'+ res.getBody());
+        string JSONContent = res.getBody();
+        JSONParser parser = JSON.createParser(res.getBody());
+        string Token;
+        while (parser.nextToken() != null) {
+            if ((parser.getCurrentToken() == JSONToken.FIELD_NAME) && 
+                (parser.getText() == 'access_token')) {
+                
+                parser.nextToken();
+                
+                Token = parser.getText();
+                    
+            }
+        }
+		//system.debug('Token=' + Token);        
+        return Token;
+    }
+    public integer CreatePackage(String token)
+    {        
+        integer PackageId;
+        String QuotationName;
+       	
+        List<Opportunity> namOppor=[SELECT Id,Account.Name,Quote_Number__c FROM Opportunity WHERE Id=:OppId];
+        if(namOppor.size() > 0)
+        {
+        	QuotationName = 'Quote ' + namOppor.get(0).Quote_Number__c+' - ' +namOppor.get(0).Account.Name;
+        }
+        else
+        {
+            QuotationName =  'Quote';
+        }
+        
+        
+        PackageModel packages = new PackageModel();
+        packages.package_name = QuotationName;
+		
+		String AuthorizationToken = 'bearer '+ token;
+        system.debug('<====>AuthorizationToken'+ AuthorizationToken);
+        
+       
+        
+        Http h = new Http();
+        HttpRequest req = new HttpRequest();
+        String endpointURL= 'https://api.signinghub.com/v3/packages';
+        system.debug('<===>endpointURL'+ endpointURL);
+        req.setEndpoint(endpointURL);
+        req.setMethod('POST');
+        req.setTimeout(120000);
+        req.setHeader('cache-control','no-cache');
+        req.setHeader('Content-Type','application/json');
+        req.setHeader('authorization',AuthorizationToken);
+        req.setHeader('Accept','application/json');
+        req.setBody(JSON.serialize(packages));
+        
+        HttpResponse res = h.send(req);
+        system.debug('<------------>Document'+ res.getBody());
+        
+        string JSONContent = res.getBody();
+        JSONParser parser = JSON.createParser(res.getBody());
+        
+        while (parser.nextToken() != null) {
+            if ((parser.getCurrentToken() == JSONToken.FIELD_NAME) && 
+                (parser.getText() == 'package_id')) {
+                
+                parser.nextToken();
+                
+                PackageId = parser.getIntegerValue();
+                    
+            }
+        }
+        system.debug('<----->PackageId'+ PackageId);
+        
+        return PackageId;
+
+        
+    }
+    public integer CreateDocument(blob body, String token, integer PackageId)
+    {        
+        integer DocumentId;
+        String QuotationName;
+        system.debug('<====>body'+ body);
+        
+        TestPayload1 packages = new TestPayload1();
+        packages.fileData = body;
+		
+		String AuthorizationToken = 'bearer '+ token;
+        system.debug('<====>AuthorizationToken'+ AuthorizationToken);
+        ////
+        
+        List<Opportunity> namOppor=[SELECT Id,Account.Name,Quote_Number__c FROM Opportunity WHERE Id=:OppId];
+        if(namOppor.size() > 0)
+        {
+        	QuotationName = 'Quote - ' + namOppor.get(0).Quote_Number__c+' - ' +namOppor.get(0).Account.Name+ '.pdf';
+        }
+        else
+        {
+            QuotationName =  'Quote.pdf';
+        }
+        Http h = new Http();
+        
+        
+        HttpRequest req = new HttpRequest();
+        String endpointURL= 'https://api.signinghub.com/v3/packages/'+ PackageId +'/documents';
+        system.debug('<===>endpointURL'+ endpointURL);
+        req.setEndpoint(endpointURL);
+        req.setMethod('POST');
+        req.setTimeout(120000);
+        req.setHeader('cache-control','no-cache');
+        req.setHeader('Content-Type','application/octet-stream');
+        req.setHeader('authorization',AuthorizationToken);
+        req.setHeader('Accept','application/json');
+        req.setHeader('x-file-name','Quote.pdf');
+        req.setHeader('x-convert-document','true');
+        req.setHeader('x-source','API');
+        req.setBodyAsBlob(body);
+        
+        HttpResponse res = h.send(req);
+        system.debug('<------------>Document'+ res.getBody());
+        
+        string JSONContent = res.getBody();
+        JSONParser parser = JSON.createParser(res.getBody());
+        
+        while (parser.nextToken() != null) {
+            if ((parser.getCurrentToken() == JSONToken.FIELD_NAME) && 
+                (parser.getText() == 'documentid')) {
+                
+                parser.nextToken();
+                
+                DocumentId = parser.getIntegerValue();
+                    
+            }
+        }
+        system.debug('<----->DocumentId'+ DocumentId);
+        
+        return DocumentId;
+
+        
+    }
+	public integer GetDocPageCount(String token, integer DocId, integer PackageId)
+    {   
+        Integer DocPages;
+        String AuthorizationToken = 'bearer '+ token;
+        
+        Http h = new Http();
+        HttpRequest req = new HttpRequest();
+        String endpointURL= 'https://api.signinghub.com/v3/packages/' + PackageId + '/documents/'+ DocId +'/details';
+        system.debug('<===>endpointURL'+ endpointURL);
+        req.setEndpoint(endpointURL);
+        req.setMethod('GET');
+        req.setTimeout(120000);
+        req.setHeader('authorization',AuthorizationToken);
+        req.setHeader('Accept','application/json');
+        
+        
+        HttpResponse res = h.send(req);
+        system.debug('<------------>Document'+ res.getBody());
+        
+        string JSONContent = res.getBody();
+        JSONParser parser = JSON.createParser(res.getBody());
+        
+        while (parser.nextToken() != null) {
+            if ((parser.getCurrentToken() == JSONToken.FIELD_NAME) && 
+                (parser.getText() == 'document_pages')) {
+                
+                parser.nextToken();
+                
+                DocPages = parser.getIntegerValue();
+                    
+            }
+        }
+        system.debug('<----->DocPages'+ DocPages);
+        
+        return DocPages;
+
+        
+    }
+	public void AssignDocumentToTemplate(String token, integer DocId, integer PackageId, integer DocPages)
+    {        
+        TemplateDetail tempDetail = new TemplateDetail();
+        if(DocPages == 2)
+        {
+        	tempDetail.template_name = 'Quote Invoice Template-96692';
+        	//tempDetail.template_name = 'QuoteTemplate-2pages';Live
+        }
+        else if(DocPages == 3)
+        {
+            //tempDetail.template_name = 'QuoteTemplateVF123-36494'; QuoteTemplateVF4page-99639
+            tempDetail.template_name = 'QuoteTemplateVF-3page-28179';
+        }
+        else if(DocPages == 4)
+        {
+            //tempDetail.template_name = 'QuoteTemplateVF123-36494'; QuoteTemplateVF4page-99639
+            tempDetail.template_name = 'QuoteTemplateVF4page-99639';
+        }
+        
+        else
+        {
+            tempDetail.template_name = 'Google-62058';
+           // tempDetail.template_name = 'QuoteTemplate-2pages'; Live
+           // tempDetail.template_name = 'Quote Invoice Template-96692'; 
+        }
+        tempDetail.apply_to_all = true;
+        
+		String AuthorizationToken = 'bearer '+ token;
+        system.debug('<====>AuthorizationToken'+ AuthorizationToken);
+        Http h = new Http();
+        
+        
+        HttpRequest req = new HttpRequest();
+        String endpointURL= 'https://api.signinghub.com/v3/packages/'+ PackageId +'/documents/'+ DocId +'/template';
+        system.debug('<===>endpointURL'+ endpointURL);
+        req.setEndpoint(endpointURL);
+        req.setMethod('POST');
+        req.setTimeout(120000);
+        req.setHeader('cache-control','no-cache');
+        req.setHeader('Content-Type','application/json');
+        req.setHeader('authorization',AuthorizationToken);
+        req.setHeader('Accept','application/json');
+       
+        req.setBody(JSON.serialize(tempDetail));
+        
+        HttpResponse res = h.send(req);
+        system.debug('<------------>AssignDocumentToTemplate'+ res.getBody());
+        //return DocumentId;
+
+        
+    }
+    
+    public void AddSignerToDoc(String token, integer PackageId, string SignerEmailId)
+    {   
+        //// Signer details
+        system.debug('<----->SignerEmailId'+ SignerEmailId);
+        AddUserToDocModel AddSigner = new AddUserToDocModel();
+        AddSigner.user_email = SignerEmailId;
+        AddSigner.user_name = SignerEmailId;
+        AddSigner.role = 'SIGNER';
+        AddSigner.email_notification = true;
+        
+        
+        
+		String AuthorizationToken = 'bearer '+ token;
+        system.debug('<====>AuthorizationToken'+ AuthorizationToken);
+        Http h = new Http();
+        
+        
+        HttpRequest req = new HttpRequest();
+        String endpointURL= 'https://api.signinghub.com/v3/packages/'+ PackageId +'/workflow/1/user';
+        system.debug('<===>endpointURL'+ endpointURL);
+        req.setEndpoint(endpointURL);
+        req.setMethod('PUT');
+        req.setTimeout(120000);
+        req.setHeader('cache-control','no-cache');
+        req.setHeader('Content-Type','application/json');
+        req.setHeader('authorization',AuthorizationToken);
+        req.setHeader('Accept','application/json');
+       
+        req.setBody(JSON.serialize(AddSigner));
+        
+        HttpResponse res = h.send(req);
+        system.debug('<------------>AddSignerToDoc'+ res.getBody()); 
+    }
+    /*
+    public void AddApproverToDoc(String token, integer PackageId, string ApproverEmailId)
+    {   
+        
+        //// Approver details
+        AddUserToDocModel AddApprover = new AddUserToDocModel();
+        AddApprover.user_email = ApproverEmailId;
+        AddApprover.user_name = ApproverEmailId;
+        AddApprover.role = 'SIGNER';
+        AddApprover.email_notification = true;
+        
+		String AuthorizationToken = 'bearer '+ token;
+        system.debug('<====>AuthorizationToken'+ AuthorizationToken);
+        Http h = new Http();
+        
+        
+        HttpRequest req = new HttpRequest();
+        String endpointURL= 'https://api.signinghub.com/v3/packages/'+ PackageId +'/workflow/2/user';
+        system.debug('<===>endpointURL'+ endpointURL);
+        req.setEndpoint(endpointURL);
+        req.setMethod('PUT');
+        req.setTimeout(120000);
+        req.setHeader('cache-control','no-cache');
+        req.setHeader('Content-Type','application/json');
+        req.setHeader('authorization',AuthorizationToken);
+        req.setHeader('Accept','application/json');
+       
+        req.setBody(JSON.serialize(AddApprover));
+        
+        HttpResponse res = h.send(req);
+        system.debug('<------------>AddApproverToDoc'+ res.getBody()); 
+    }*/
+    
+    public void StartWorkflow(String token, integer PackageId, integer DocId)
+    {   
+		String AuthorizationToken = 'bearer '+ token;
+        system.debug('<====>AuthorizationToken'+ AuthorizationToken);
+        Http h = new Http();
+        string body = '';
+        
+        HttpRequest req = new HttpRequest();
+        String endpointURL= 'https://api.signinghub.com/v3/packages/'+ PackageId +'/workflow';
+        system.debug('<===>endpointURL'+ endpointURL);
+        req.setEndpoint(endpointURL);
+        req.setMethod('POST');
+        req.setTimeout(120000);
+        req.setHeader('cache-control','no-cache');
+        req.setHeader('authorization',AuthorizationToken);
+        req.setHeader('Accept','application/json');
+       	req.setHeader('Content-Type','application/json');
+        req.setBody(body);
+	        
+        HttpResponse res = h.send(req);
+        
+        if(PackageId != null && DocId != null){
+			ApexPages.addmessage(new ApexPages.message(ApexPages.severity.CONFIRM,'Email sent Successfully'));
+		}
+		else
+		{
+			ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING,'Email not sent Successfully'));
+		}
+        system.debug('<------------>StartWorkflow'+ res.getBody()); 
+        changelinkstatus(PackageId, DocId);
+    }
+    public void changelinkstatus(integer PackageId, integer DocId)
+    {
+        Opportunity msinfoOne=null;
+        
+        List<Opportunity> tempSO = [select ID,E_Signature_Link__c,SignHubDocId__c,SignHubPackageId__c from Opportunity where Id=:OppId];
+        
+        if(tempSO.size()>0)
+        {
+            msinfoOne=tempSO.get(0);
+            msinfoOne.E_Signature_Link__c='Quote Link Send'; 
+            msinfoOne.SignHubDocId__c= string.valueof(DocId);
+            msinfoOne.SignHubPackageId__c=string.valueof(PackageId); 
+            update msinfoOne;
+        }
+        
+    }
+string temp = '';
+    string temp1 = '';
+    string temp2 = '';
+    string temp3 = '';
+    string temp4 = '';
+    string temp5 = '';
+    string temp6 = '';
+    string temp7 = '';
+    string temp8 = '';
+    string temp9 = '';
+    string temp10 = '';
+    string temp11 = '';
+    string temp12 = '';
+    string temp13 = '';
+    string tempe = '';
+    string tempe1 = '';
+    string tempe2 = '';
+    string tempe3 = '';
+    string tempe4 = '';
+    string tempe5 = '';
+    string tempe6 = '';
+    string tempe7 = '';
+    string tempe8 = '';
+    string tempe9 = '';
+    string tempe10 = '';
+    string tempe11 = '';
+    string tempe12 = '';
+    string tempe13 = '';
+    string tempw = '';
+    string tempw1 = '';
+    string tempw2 = '';
+	string tempw3 = '';
+    string tempw4 = '';
+    string tempw5 = '';
+    string tempw6 = '';
+    string tempw7 = '';
+    string tempw8 = '';
+    string tempw9 = '';
+    string tempw10 = '';
+    string tempw11 = '';
+    string tempw12 = '';
+    string tempw13 = '';
+    string tempq = '';
+    string tempq1 = '';
+    string tempq2 = '';
+    string tempq3 = '';
+    string tempq4 = '';
+    string tempq5 = '';
+    string tempq6 = '';
+    string tempq7 = '';
+    string tempq8 = '';
+    string tempq9 = '';
+    string tempq10 = '';
+    string tempq11 = '';
+    string tempq12 = '';
+    string tempq13 = '';
+    string tempr = '';
+    string tempr1 = '';
+    string tempr2 = '';
+    string tempr3 = '';
+    string tempr4 = '';
+    string tempr5 = '';
+    string tempr6 = '';
+    string tempr7 = '';
+    string tempr8 = '';
+    string tempr9 = '';
+    string tempr10 = '';
+    string tempr11 = '';
+    string tempr12 = '';
+    string tempr13 = '';
+    string tempg = '';
+    string tempg1 = '';
+    string tempg2 = '';
+    string tempg3 = '';
+    string tempg4 = '';
+    string tempg5 = '';
+    string tempg6 = '';
+    string tempg7 = '';
+    string tempg8 = '';
+    string tempg9 = '';
+    string tempg10 = '';
+    string tempg11 = '';
+    string tempg12 = '';
+    string tempg13 = '';
+    string tempc = '';
+    string tempc1 = '';
+    string tempc2 = '';
+    string tempc3 = '';
+    string tempc4 = '';
+    string tempc5 = '';
+    string tempc6 = '';
+    string tempc7 = '';
+    string tempc8 = '';
+    string tempc9 = '';
+    string tempc10 = '';
+    string tempc11 = '';
+    string tempc12 = '';
+    string tempc13 = '';
+    string tempp = '';
+    string tempp1 = '';
+    string tempp2 = '';
+    string tempp3 = '';
+    string tempp4 = '';
+    string tempp5 = '';
+    string tempp6 = '';
+    string tempp7 = '';
+    string tempp8 = '';
+    string tempp9 = '';
+    string tempp10 = '';
+    string tempp11 = '';
+    string tempp12 = '';
+    string tempp13 = '';
+    string tempt = '';
+    string tempt1 = '';
+    string tempt2 = '';
+    string tempt3 = '';
+    string tempt4 = '';
+    string tempt5 = '';
+    string tempt6 = '';
+    string tempt7 = '';
+    string tempt8 = '';
+    string tempt9 = '';
+    string tempt10 = '';
+    string tempt11 = '';
+    string tempt12 = '';
+    string tempt13 = '';
+    string tempo = '';
+    string tempo1 = '';
+    string tempo2 = '';
+    string tempo3 = '';
+    string tempo4 = '';
+    string tempo5 = '';
+    string tempo6 = '';
+    string tempo7 = '';
+    string tempo8 = '';
+    string tempo9 = '';
+    string tempo10 = '';
+    string tempo11 = '';
+    string tempo12 = '';
+    string tempo13 = '';
+    string tempy = '';
+    string tempy1 = '';
+    string tempy2 = '';
+    string tempy3 = '';
+    string tempy4 = '';
+    string tempy5 = '';
+    string tempy6 = '';
+    string tempy7 = '';
+    string tempy8 = '';
+    string tempy9 = '';
+    string tempy10 = '';
+    string tempyt11 = '';
+    string tempy12 = '';
+    string tempy13 = '';
+    string temph= '';
+    string temph1 = '';
+    string temph2 = '';
+    string temph3 = '';
+    string temph4 = '';
+    string temph5 = '';
+    string temph6 = '';
+    string temph7 = '';
+    string temph8 = '';
+    string temph9 = '';
+    string temph10 = '';
+    string tempht11 = '';
+    string temph12 = '';
+    string temph13 = '';
+    string temh= '';
+    string temh1 = '';
+    string temh2 = '';
+    string temh3 = '';
+    string temh4 = '';
+    string temh5 = '';
+    string temh6 = '';
+    string temh7 = '';
+    string temh8 = '';
+    string temh9 = '';
+    string temh10 = '';
+    string temht11 = '';
+    string temh12 = '';
+    string temh13 = '';
+     Integer i = 0;
+    Integer i1 = 0;
+    Integer i2 = 0;
+    Integer i3 = 0;
+    Integer i4 = 0;
+    Integer i5 = 0;
+    Integer i6 = 0;
+    Integer i7 = 0;
+    Integer i8 = 0;
+    Integer i9 = 0;
+    Integer i10 = 0;
+    Integer i11 = 0;
+    Integer i12 = 0;
+    Integer i13 = 0;
+    Integer i14 = 0;
+    Integer i15 = 0;
+    Integer i16 = 0;
+    Integer i17 = 0;
+    Integer i18 = 0;
+    
+    
+    Integer ab = 0;
+    Integer a1 = 0;
+    Integer a2 = 0;
+    Integer a3 = 0;
+    Integer a4 = 0;
+    Integer a5 = 0;
+    Integer a6 = 0;
+    Integer a7 = 0;
+    Integer a8 = 0;
+    Integer a9 = 0;
+    Integer a10 = 0;
+    Integer a11 = 0;
+    Integer a12 = 0;
+    Integer a13 = 0;
+    Integer a14 = 0;
+    Integer ab12 = 0;
+    Integer ab1 = 0;
+    Integer ab2 = 0;
+    Integer ab3 = 0;
+    Integer ab4 = 0;
+    Integer ab5 = 0;
+    Integer ab6 = 0;
+    Integer ab7 = 0;
+    Integer ab8 = 0;
+    Integer ab9 = 0;
+    Integer ab10 = 0;
+    Integer ab11 = 0;
+    Integer ab122 = 0;
+    Integer ab13 = 0;
+    Integer ab14 = 0;
+    Integer bb = 0;
+    Integer b1 = 0;
+    Integer b2 = 0;
+    Integer b3 = 0;
+    Integer b4 = 0;
+    Integer b5 = 0;
+    Integer b6 = 0;
+    Integer b7 = 0;
+    Integer b8 = 0;
+    Integer b9 = 0;
+    Integer b10 = 0;
+    Integer b11 = 0;
+    Integer b12 = 0;
+    Integer b13 = 0;
+    Integer b14 = 0;
+    Integer br = 0;
+    Integer br1 = 0;
+    Integer br2 = 0;
+    Integer br3 = 0;
+    Integer br4 = 0;
+    Integer br5 = 0;
+    Integer br6 = 0;
+    Integer br7 = 0;
+    Integer br8 = 0;
+    Integer br9 = 0;
+    Integer br10 = 0;
+    Integer br11 = 0;
+    Integer br12 = 0;
+    Integer br13 = 0;
+    Integer br14 = 0;
+    Integer cb = 0;
+    Integer c1 = 0;
+    Integer c2 = 0;
+    Integer c3 = 0;
+    Integer c4 = 0;
+    Integer c5 = 0;
+    Integer c6 = 0;
+    Integer c7 = 0;
+    Integer c8 = 0;
+    Integer c9 = 0;
+    Integer c10 = 0;
+    Integer c11 = 0;
+    Integer c12 = 0;
+    Integer c13 = 0;
+    Integer c14 = 0;
+    
+    Integer db = 0;
+    Integer d1 = 0;
+    Integer d2 = 0;
+    Integer d3 = 0;
+    Integer d4 = 0;
+    Integer d5 = 0;
+    Integer d6 = 0;
+    Integer d7 = 0;
+    Integer d8 = 0;
+    Integer d9 = 0;
+    Integer d10 = 0;
+    Integer d11 = 0;
+    Integer d12 = 0;
+    Integer d13 = 0;
+    Integer d14 = 0;
+    
+    Integer eb = 0;
+    Integer e1 = 0;
+    Integer e2 = 0;
+    Integer e3 = 0;
+    Integer e4 = 0;
+    Integer e5 = 0;
+    Integer e6 = 0;
+    Integer e7 = 0;
+    Integer e8 = 0;
+    Integer e9 = 0;
+    Integer e10 = 0;
+    Integer e11 = 0;
+    Integer e12 = 0;
+    Integer e13 = 0;
+    Integer e14 = 0;
+    
+    Integer fb = 0;
+    Integer f1 = 0;
+    Integer f2 = 0;
+    Integer f3 = 0;
+    Integer f4 = 0;
+    Integer f5 = 0;
+    Integer f6 = 0;
+    Integer f7 = 0;
+    Integer f8 = 0;
+    Integer f9 = 0;
+    Integer f10 = 0;
+    Integer f11 = 0;
+    Integer f12 = 0;
+    Integer f13 = 0;
+    Integer f14 = 0;
+    
+    Integer rb = 0;
+    Integer r1 = 0;
+    Integer r2 = 0;
+    Integer r3 = 0;
+    Integer r4 = 0;
+    Integer r5 = 0;
+    Integer r6 = 0;
+    Integer r7 = 0;
+    Integer r8 = 0;
+    Integer r9 = 0;
+    Integer rr10 = 0;
+    Integer r11 = 0;
+    Integer r12 = 0;
+    Integer r13 = 0;
+    Integer r14 = 0;
+    
+    Integer vb = 0;
+    Integer v1 = 0;
+    Integer v2 = 0;
+    Integer v3 = 0;
+    Integer v4 = 0;
+    Integer v5 = 0;
+    Integer v6 = 0;
+    Integer v7 = 0;
+    Integer v8 = 0;
+    Integer v9 = 0;
+    Integer v10 = 0;
+    Integer v11 = 0;
+    Integer v12 = 0;
+    Integer v13 = 0;
+    Integer v14 = 0;
+    
+    
+    Integer gb = 0;
+    Integer g1 = 0;
+    Integer g2 = 0;
+    Integer g3 = 0;
+    Integer g4 = 0;
+    Integer g5 = 0;
+    Integer g6 = 0;
+    Integer g7 = 0;
+    Integer g8 = 0;
+    Integer g9 = 0;
+    Integer g10 = 0;
+    Integer g11 = 0;
+    Integer g12 = 0;
+    Integer g13 = 0;
+    Integer g14 = 0;
+    
+    Integer hb = 0;
+    Integer h1 = 0;
+    Integer h2 = 0;
+    Integer h3 = 0;
+    Integer h4 = 0;
+    Integer h5 = 0;
+    Integer h6 = 0;
+    Integer h7 = 0;
+    Integer h8 = 0;
+    Integer h9 = 0;
+    Integer h10 = 0;
+    Integer hn11 = 0;
+    Integer h12 = 0;
+    Integer h13 = 0;
+    Integer h14 = 0;
+    Integer h100 = 0;
+    Integer h200 = 0;
+    Integer h300 = 0;
+    Integer h400 = 0;
+    Integer h500= 0;
+    Integer h600 = 0;
+    Integer h700 = 0;
+    Integer h800 = 0;
+    Integer h900 = 0;
+    Integer h1000 = 0;
+    Integer hn110 = 0;
+    Integer h121 = 0;
+    Integer h131 = 0;
+    Integer h141 = 0;
+    
+    Integer orb = 0;
+    Integer o1 = 0;
+    Integer o2 = 0;
+    Integer o3 = 0;
+    Integer o4 = 0;
+    Integer o5 = 0;
+    Integer o6 = 0;
+    Integer o7 = 0;
+    Integer o8 = 0;
+    Integer o9 = 0;
+    Integer o10 = 0;
+    Integer o11 = 0;
+    Integer o12 = 0;
+    Integer o13 = 0;
+    Integer o14 = 0;
+    
+    Integer kb = 0;
+    Integer k1 = 0;
+    Integer k2 = 0;
+    Integer k3 = 0;
+    Integer k4 = 0;
+    Integer k5 = 0;
+    Integer k6 = 0;
+    Integer k7 = 0;
+    Integer k8 = 0;
+    Integer k9 = 0;
+    Integer k10 = 0;
+    Integer k11 = 0;
+    Integer k12 = 0;
+    Integer k13 = 0;
+    Integer k14 = 0;
+    
+    Integer pb = 0;
+    Integer p1 = 0;
+    Integer p2 = 0;
+    Integer p3 = 0;
+    Integer p4 = 0;
+    Integer p5 = 0;
+    Integer p6 = 0;
+    Integer p7 = 0;
+    Integer p8 = 0;
+    Integer p9 = 0;
+    Integer p10 = 0;
+    Integer p11 = 0;
+    Integer p12 = 0;
+    Integer p13 = 0;
+    Integer p14 = 0;
+    Integer tb = 0;
+    Integer t1 = 0;
+    Integer t2 = 0;
+    Integer t3 = 0;
+    Integer t4 = 0;
+    Integer t5 = 0;
+    Integer t6 = 0;
+    Integer t7 = 0;
+    Integer t8 = 0;
+    Integer t9 = 0;
+    Integer t10 = 0;
+    Integer t11 = 0;
+    Integer t12 = 0;
+    Integer t13 = 0;
+    Integer t14 = 0;
+    Integer t16 = 0;
+    Integer t17 = 0;
+    Integer t18 = 0;
+    Integer t19 = 0;
+    Integer t20 = 0;
+    Integer t21 = 0;
+    Integer t22 = 0;
+    Integer t23 = 0;
+    Integer t24 = 0;
+    Integer t25 = 0;
+    Integer t26 = 0;
+    Integer t27 = 0;
+    Integer t28 = 0;
+    Integer t29 = 0;
+    Integer t30 = 0;
+    Integer t31 = 0;
+    Integer t32 = 0;
+    Integer t33 = 0;
+    Integer t34 = 0;
+    Integer t35 = 0;
+    Integer t36 = 0;
+    Integer t37 = 0;
+    Integer t100 = 0;
+    Integer t110 = 0;
+    Integer t120 = 0;
+    Integer t130 = 0;
+    Integer t140 = 0;
+    Integer t160 = 0;
+    Integer t170 = 0;
+    Integer t180 = 0;
+    Integer t190 = 0;
+    Integer t200 = 0;
+    Integer t210 = 0;
+    Integer t220 = 0;
+    Integer t230 = 0;
+    Integer t240 = 0;
+    Integer t250 = 0;
+    Integer t260 = 0;
+    Integer t270 = 0;
+    Integer t280 = 0;
+    Integer t290 = 0;
+    Integer t300 = 0;
+    Integer t310 = 0;
+    Integer t320 = 0;
+    Integer t330 = 0;
+    Integer t340 = 0;
+    Integer t350 = 0;
+    Integer t360 = 0;
+    Integer t370 = 0;
+    Integer t101 = 0;
+    Integer t111 = 0;
+    Integer t121 = 0;
+    Integer t131= 0;
+    Integer t141 = 0;
+    Integer t161 = 0;
+    Integer t171 = 0;
+    Integer t181 = 0;
+    Integer t191 = 0;
+    Integer t201 = 0;
+    Integer t211 = 0;
+    Integer t221 = 0;
+    Integer t231 = 0;
+    Integer t241 = 0;
+    Integer t251 = 0;
+    Integer t261 = 0;
+    Integer t271 = 0;
+    Integer t281 = 0;
+    Integer t291 = 0;
+    Integer t301 = 0;
+    Integer t311 = 0;
+    Integer t321 = 0;
+    Integer t331 = 0;
+    Integer t341 = 0;
+    Integer t351 = 0;
+    Integer t361 = 0;
+    Integer t371 = 0;
+    Integer t1001 = 0;
+    Integer t1101 = 0;
+    Integer t1201 = 0;
+    Integer t1301 = 0;
+    Integer t1401 = 0;
+    Integer t1601 = 0;
+    Integer t1701 = 0;
+    Integer t1801 = 0;
+    Integer t1901 = 0;
+    Integer t2001 = 0;
+    Integer t2101 = 0;
+    Integer t2201 = 0;
+    Integer t2301 = 0;
+    Integer t2401 = 0;
+    Integer t2501 = 0;
+    Integer t2601 = 0;
+    Integer t2701 = 0;
+    Integer t2801 = 0;
+    Integer t2901 = 0;
+    Integer t3001 = 0;
+    Integer t3101 = 0;
+    Integer t3201 = 0;
+    Integer t3301 = 0;
+    Integer t3401 = 0;
+    Integer t3501 = 0;
+    Integer t3601 = 0;
+    Integer t3701 = 0;
+	    Integer tt221 = 0;
+    Integer tt231 = 0;
+    Integer tt241 = 0;
+    Integer tt251 = 0;
+    Integer tt261 = 0;
+    Integer tt271 = 0;
+    Integer tt281 = 0;
+    Integer tt291 = 0;
+    Integer tt301 = 0;
+    Integer tt311 = 0;
+    Integer tt321 = 0;
+    Integer tt331 = 0;
+    Integer tt341 = 0;
+    Integer tt351 = 0;
+    Integer tt361 = 0;
+    Integer tt371 = 0;
+    Integer tt1001 = 0;
+    Integer tt1101 = 0;
+    Integer tt1201 = 0;
+    Integer tt1301 = 0;
+    Integer tt1401 = 0;
+    Integer tt1601 = 0;
+    Integer tt1701 = 0;
+    Integer tt1801 = 0;
+    Integer tt1901 = 0;
+    Integer tt2001 = 0;
+    Integer tt2101 = 0;
+    Integer tt2201 = 0;
+    Integer tt2301 = 0;
+    Integer tt2401 = 0;
+    Integer tt2501 = 0;
+    Integer tt2601 = 0;
+    Integer tt2701 = 0;
+    Integer tt2801 = 0;
+    Integer tt2901 = 0;
+    Integer tt3001 = 0;
+    Integer tt3101 = 0;
+    Integer tt3201 = 0;
+    Integer tt3301 = 0;
+    Integer tt3401 = 0;
+    Integer tt3501 = 0;
+    Integer tt3601 = 0;
+    Integer tt3701 = 0;
+    string tp1 = '';
+    string tp2 = '';
+    string tp3 = '';
+    string tp4 = '';
+    string tp5 = '';
+    string tp6 = '';
+    string tp7 = '';
+    string tp8 = '';
+    string tp9 = '';
+    string tp10 = '';
+    string tp11 = '';
+    string tp12 = '';
+    string tp13 = '';
+    string tpe = '';
+    string tpeme1 = '';
+    string tpeme2 = '';
+    string tpeme3 = '';
+    string tpeme4 = '';
+    string tpeme5 = '';
+    string tpeme6 = '';
+    string tpeme7 = '';
+    string tpeme8 = '';
+    string tpeme9 = '';
+    string tpeme10 = '';
+    string tpeme11 = '';
+    string tpeme12 = '';
+    string tpeme13 = '';
+    string tempwx = '';
+    string tempwx1 = '';
+    string tempwx2 = '';
+	string tempwx3 = '';
+    string tempwx4 = '';
+    string tempwx5 = '';
+    string tempwx6 = '';
+    string tempwx7 = '';
+    string tempwx8 = '';
+    string tempwx9 = '';
+    string tempwx10 = '';
+    string tempwx11 = '';
+    string tempwx12 = '';
+    string tempwx13 = '';
+    
+}

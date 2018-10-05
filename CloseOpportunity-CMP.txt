@@ -1,0 +1,54 @@
+<aura:component controller="CloseOpportunity" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+	
+    <aura:attribute name="recordId" type="Id" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:attribute name="oppor" type="Opportunity" />
+    <aura:attribute name="closeReason" type="String[]" />
+    <aura:attribute name="closeStages" type="String[]" />
+    
+    <aura:attribute name="errorMessage" type="String" />
+    
+    <div class="slds-form slds-form_stacked">
+        <div class="slds-form-element">
+            <ui:inputSelect aura:id="closeStage" label="Closed Lost Stages" labelClass="slds-form-element__label" class="slds-input" change="{!c.changeReseller}">
+                
+                        <aura:iteration items="{!v.closeStages}" var="stage">
+                             <ui:inputSelectOption text="{!stage}" label="{!stage}"/>
+                        </aura:iteration>
+                     </ui:inputSelect>
+        </div>
+         <div class="slds-form-element toggle" aura:id= "CloseReasonDiv">
+          <ui:inputSelect aura:id="levels" label="Closed Lost Reason" required="true" labelClass="slds-form-element__label" class="slds-input" change="{!c.changeReason}">
+              			<ui:inputSelectOption text="" label="--None--"/>
+                        <aura:iteration items="{!v.closeReason}" var="level">
+                             <ui:inputSelectOption text="{!level}" label="{!level}"/>
+                        </aura:iteration>
+                     </ui:inputSelect>
+        </div>
+       
+         <div class="slds-form-element toggle" aura:id="pricebox">
+          <ui:inputText label="Estimated Amount Too High" value="{!v.oppor.Required__c}" labelClass="slds-form-element__label" class="slds-input"/>
+        </div>
+        <div class="slds-form-element toggle" aura:id="resellerbox">
+          <ui:inputText label="Reseller Name" value="{!v.oppor.Reseller_Name_Text__c}" labelClass="slds-form-element__label" class="slds-input"/>
+        </div>
+         <!--<div class="slds-form-element">
+          <ui:inputText label="Competitor Name" value="{!v.oppor.Competitor_Name__c}" labelClass="slds-form-element__label" class="slds-input"/>
+        </div>-->
+        <div class="slds-form-element">
+          <ui:inputText label="Closed Lost Reason" value="{!v.oppor.Notes__c}" labelClass="slds-form-element__label" class="slds-input"/>
+        </div>
+        <div class="slds-form-element">
+            <div class="slds-truncate slds-text-color_error" title="{!v.errorMessage}">
+                        {!v.errorMessage}
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="slds-p-vertical_small slds-align_absolute-center">
+        <ui:button label="Save" class="slds-button_brand" press="{!c.updateOpportu}"/>
+    </div>
+    
+</aura:component>

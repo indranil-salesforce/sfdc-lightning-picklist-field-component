@@ -1,0 +1,85 @@
+<aura:component controller="AddProductController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    <!--<aura:attribute name="LocationCode" type="String[]" default="CAM-MFG,CTC-MFG,DAL-DIST,DEK-MFG,DROPSHIP,LIN-MFG,MULTIPLE,NYC-MFG,ORL-DIST,ORL-MFG,SFS-DIST,UK"/>-->
+    <style>
+    .opportunitytable input {
+        border: 0px !important;
+        border-bottom-width: 0px !important;
+        border-bottom-style: none !important;
+        border-bottom-color: currentcolor !important;
+        outline: none !important;
+        border-bottom: #999999 1px solid !important;
+        color: #333333 !important;
+        width: 100% !important;
+        padding: 8px 0 !important;
+        font-size: 14px !important;
+        line-height: 0rem !important;
+        border-radius: 0px !important;   
+	}
+    .opportunitytable input.textcenter {
+    	text-align: center;
+	}
+    .opportunitytable input.right {
+    	text-align: right;
+	}
+    .opportunitytable .deletebtn{ padding:9px 10px; margin: 0; width: 100px; box-sizing: border-box; -moz-box-sizing: -webkit-border-box; box-sizing: border-box; background-color:rgba(27, 82, 151, 1.0); color: #ffffff; font-size: 14px; text-align: center; border-radius: 4px; border: 0px; outline:none; font-weight: normal; cursor: pointer; position: relative; line-height:1rem; text-align:center; float:right;}
+    </style>
+    <aura:handler name="init" value="{!this}" action="{!c.doinit}"/> 
+    <aura:attribute name="lineItems" type="OpportunityLineItem" />
+    <aura:attribute name="product" type="PricebookEntry" />
+    <aura:attribute name="closeStages" type="String[]" />
+    <style>
+        .slds-table_bordered tbody td{ border-top:0px !important;}
+.slds-table_bordered tbody th{ border-top:0px !important;}
+        .slds-table_bordered, .slds-table--bordered{ border-bottom:0px !important;}
+    </style>
+
+        			<!--<div class="opportunitytable">-->
+    				
+							<tr>
+							<td align="center" width="2%" style= "font-size: 16px;color: #333333;font-weight: normal;padding: 15px;">
+								<div class="activebox" style= "padding: 0;margin: 0;width: 12px;height: 12px;background-color: #33cc66;border-radius: 2px;"></div>
+							</td>
+							<td align="left" width="3%">
+                                <input value="{!v.lineItems.Temp_Prod_Name__c}" disabled="disabled" style= "background-color: transparent;border-bottom: #e5e5e5 1px solid !important;"/>
+							</td>
+							<td align="left" width="38%">
+                                <input  value="{!v.lineItems.Description__c}" disabled="disabled" style ="background-color: transparent;border-bottom: #e5e5e5 1px solid !important;"/>
+							</td>
+							<td align="center" width="3%">
+                               <ui:inputNumber value="{!v.lineItems.Quantity}" class="textcenter" />
+							</td>
+							<td align="right" width="3%">
+                                <ui:inputNumber value="{!v.lineItems.UnitPrice}" class="right" />
+							</td>
+                           <!-- <td align="center" width="7%">
+                                <ui:inputSelect aura:id="closeStage" labelClass="slds-form-element__label" class="slds-input">
+								  <aura:iteration items="{!v.closeStages}" var="stage">
+                             		<ui:inputSelectOption text="{!stage}" label="{!stage}"/>
+                                    </aura:iteration>
+                         		</ui:inputSelect>
+							</td>-->
+                           <!-- <td align="left" width="3%">
+                                <input value="{!v.lineItems.UnitPrice}" disabled="disabled" style= "background-color: transparent;border-bottom: #e5e5e5 1px solid !important;"/>
+							</td>
+                            <td align="left" width="3%">
+                                <input value="{!v.lineItems.Product2.Silver_Price__c}" disabled="disabled" style= "background-color: transparent;border-bottom: #e5e5e5 1px solid !important;"/>
+							</td>
+                            <td align="left" width="3%">
+                                <input value="{!v.lineItems.Product2.Gold_Price__c}" disabled="disabled" style= "background-color: transparent;border-bottom: #e5e5e5 1px solid !important;"/>
+							</td>
+                            <td align="left" width="3%">
+                                <input value="{!v.lineItems.Product2.Platinum_Price__c}" disabled="disabled" style= "background-color: transparent;border-bottom: #e5e5e5 1px solid !important;"/>
+							</td>  -->  
+							<td align="left" width="41%">
+                                <ui:inputText aura:id="AdditionalInformation" placeholder="Additional Information" value="{!v.lineItems.Test_Additional_Info__c}" maxlength="254"/>
+							</td>
+                            <td align="center" width="0.5%">
+                               <ui:inputNumber value="{!v.lineItems.Quote_Order_Number__c}" class="textcenter" />
+							</td>
+							<td align="center" width="9.5%">
+                                <ui:button class="deletebtn" press="{!c.removeLineItemsJS}">Remove</ui:button>
+							</td>
+						</tr>
+
+    <!--</div>-->
+</aura:component>

@@ -1,0 +1,714 @@
+global class avalaraintegration_Controller_Account implements Database.Batchable<Account>,Database.AllowsCallouts, Database.Stateful{
+  
+    global List<Account> data{set;get;}
+    global Bulk_Behavior_Tracking__c temp1= new Bulk_Behavior_Tracking__c();
+    global Bulk_Behavior_Tracking__c temp= new Bulk_Behavior_Tracking__c();
+    global Decimal tax_value;
+    global string tax_value1;
+    global boolean Bill_to_Validation = true;
+    global boolean Ship_to_Validation = true;
+    
+    global avalaraintegration_Controller_Account(List<Account> data){
+        this.data=data;
+    }
+    global string State;
+    global string tax_val;
+    global string tax_val5;
+    global string billing_tax_val5;
+    global string billing_street_val;
+    global string billing_city_val;
+    global string billing_state_val;
+    global string delivery_street_val;
+    global string delivery_city_val;
+    global string delivery_state_val;
+    global List<Account> start(Database.BatchableContext bc){
+        return data;
+    }
+ 
+   global void execute(Database.BatchableContext bc, List<Account> data){
+        
+        List<RequestAddresses> opporLineItemsPayload=new List<RequestAddresses>();
+        List<RequestLines> opporLineItemsPayload1=new List<RequestLines>();
+        RequestJson mainPayLoad=new RequestJson();
+        Set<ID> actualId=new Set<ID>();
+        //string tax_val;
+        for(Account temp:data){
+            actualId.add(temp.ID);
+        }
+        
+        string zipcodedigits;
+       List<Account> OpportunityDetailsList= new List<Account>();
+        OpportunityDetailsList=[select id,BillingCity,BillingStreet,BillingState,BillingPostalCode,BillingCountry,ShippingStreet,ShippingCity,ShippingState,ShippingCountry,ShippingPostalCode,name from Account where id=:actualId];
+        
+        system.debug('<---------------->val'+OpportunityDetailsList);
+        
+        Http http= new Http();
+        
+        for(Account opp:OpportunityDetailsList){
+            system.debug('<---------------->val1'+OpportunityDetailsList);
+            
+            string delivery_street1;
+            string delivery_street2;
+            string delivery_city;
+           /* if(opp.ShippingStreet !=  null && opp.ShippingStreet !=  ''){ 
+                delivery_street1=opp.ShippingStreet;
+                delivery_street1 = delivery_street1.replace(' ', '+');
+                delivery_street1 = delivery_street1.replace('#',EncodingUtil.URLENCODE('#', 'UTF-8'));
+                //delivery_street1 = EncodingUtil.URLENCODE('#','UTF-8');
+               
+                system.debug('====temp===='+delivery_street1);
+           }
+            else
+            {
+                delivery_street1 = '';
+            }*/
+            if(opp.ShippingStreet !=  null && opp.ShippingStreet !=  ''){    
+            delivery_street2=opp.ShippingStreet;
+            //delivery_street2 = delivery_street2.replace(' ', '%20');
+            delivery_street2 = delivery_street2.replace(' ', '+');
+            delivery_street2 = delivery_street2.replace('#',EncodingUtil.URLENCODE('#', 'UTF-8'));
+            //delivery_street2 = delivery_street2.replace('#', ' ');
+            system.debug('====temp===='+delivery_street2);
+            }
+            else
+            {
+                delivery_street2 = '';
+            }
+            if(opp.ShippingCity !=  null && opp.ShippingCity !=  ''){    
+                delivery_city=opp.ShippingCity;
+                delivery_city = delivery_city.replace(' ', '%20');
+                system.debug('====temp===='+delivery_city);    
+            }
+            else
+            {
+                delivery_city = '';
+            }
+            if(opp.ShippingState !=  null && opp.ShippingState !=  ''){    
+                State=opp.ShippingState;    
+            }
+            else
+            {
+                State = '';
+            }
+            HttpRequest req= new HttpRequest();
+            String responseFromUSPS; 
+            String endpointURL= 'http://production.shippingapis.com/ShippingAPI.dll?API=ZipCodeLookup&XML=<ZipCodeLookupRequest%20USERID="930TEST01558"><Address%20ID="1"><Address1>'+delivery_street1+'</Address1><Address2>'+delivery_street2+'</Address2><City>'+delivery_city+'</City>%20<State>'+State+'</State><Zip5>'+OpportunityDetailsList.get(0).ShippingPostalCode+'</Zip5><Zip4></Zip4></Address></ZipCodeLookupRequest>';
+            system.debug('<===>endpointURL'+ endpointURL);
+            req.setEndpoint(endpointURL);
+            req.setMethod('POST');
+            req.setHeader('Content-Type','application/x-www-form-urlencoded');
+            //req.setBody(JSON.serialize(endpointURL));
+            
+            try{
+                 HTTPResponse res = http.send(req);
+                responseFromUSPS = res.getBody();  
+                system.debug('<------------>responseusps'+ responseFromUSPS);
+                Dom.Document doc = res.getBodyDocument();
+                system.debug('<------------------>doc' + doc);
+                DOM.XmlNode xroot=doc.getRootElement();
+                List<TaxModel> newaccounts = new List<TaxModel> ();
+
+                
+                dom.XmlNode [] xrec = xroot.getchildelements() ; //Get all Record Elements
+
+                for(Dom.XMLNode child : xrec) //Loop Through Records
+                {
+                 TaxModel tax = new TaxModel ();
+                
+                  for (dom.XmlNode awr : child.getchildren() ) {
+                        
+                      if (awr.getname() == 'Address2') {
+                          system.debug('Address2' + awr.gettext());
+                          tax.delivery_street = awr.gettext();
+                      }
+                      if (awr.getname() == 'City') {
+                          system.debug('City' + awr.gettext());
+                          tax.delivery_city = awr.gettext();
+                      }
+                      if (awr.getname() == 'State') {
+                          system.debug('State' + awr.gettext());
+                          tax.delivery_state = awr.gettext();
+                      }
+                      if (awr.getname() == 'Zip5') {
+                          system.debug('Zip5' + awr.gettext());
+                          tax.zipCode5 = awr.gettext();
+                      }
+                      if (awr.getname() == 'Zip4') {
+                          system.debug('Zip4' + awr.gettext());
+                          tax.get_tax = awr.gettext();
+                      }
+                
+                
+                }
+                newaccounts.add(tax);
+                }
+                
+                system.debug('<++++++++>newaccounts' + newaccounts);          
+                
+                for(TaxModel test1: newaccounts )
+                {
+                    tax_val = test1.get_tax;
+                    tax_val5 = test1.zipCode5;
+                    delivery_street_val = test1.delivery_street;
+                    delivery_city_val = test1.delivery_city;
+                    delivery_state_val = test1.delivery_state;
+                }
+                system.debug('<++++++++>tax_val' + tax_val);
+          
+                for(Dom.XMLNode child1 : xrec) //Loop Through Records
+                {
+                	for (dom.XmlNode awr1 : child1.getchildren() ) {
+                        
+                      if (awr1.getname() == 'Error') {
+                          system.debug('Error' + awr1.gettext());
+                          Ship_to_Validation = false;
+                          
+                          List<Account> newopp1 = [Select Ship_Address_Validation__c from Account where Id =: actualId];
+                          
+                          if(newopp1.size() > 0 )
+                          {
+                              //TriggerUtil.isFutureUpdate = true;
+                              newopp1.get(0).Ship_Address_Validation__c = false;
+                              
+                              //update newopp1;
+                          }
+                      }
+                	}
+                
+                }
+        }
+            
+            Catch(Exception e){
+                System.debug('e""""""""""""""""""'+e);
+            }
+            
+            string billing_street1;
+            string billing_street2;
+            string billing_city;
+          /*  if(opp.BillingStreet !=  null && opp.BillingStreet !=  ''){ 
+                billing_street1=opp.BillingStreet;
+                billing_street1 = billing_street1.replace(' ', '%20');
+                billing_street1 = billing_street1.replace('#', ' ');
+                system.debug('====temp===='+billing_street1);
+           }
+            else
+            {
+                billing_street1 = '';
+            }*/
+            if(opp.BillingStreet !=  null && opp.BillingStreet !=  ''){    
+            billing_street2=opp.BillingStreet;
+            billing_street2 = billing_street2.replace(' ', '%20');
+            billing_street2 = billing_street2.replace('#', ' ');
+            system.debug('====temp===='+billing_street2);
+            }
+            else
+            {
+                billing_street2 = '';
+            }
+            if(opp.BillingCity !=  null && opp.BillingCity !=  ''){    
+                billing_city=opp.BillingCity;
+                billing_city = billing_city.replace(' ', '%20');
+                system.debug('====temp===='+billing_city);    
+            }
+            else
+            {
+                billing_city = '';
+            }
+            HttpRequest req1= new HttpRequest();
+            String responseFromUSPS1; 
+            String endpointURL1= 'http://production.shippingapis.com/ShippingAPI.dll?API=ZipCodeLookup&XML=<ZipCodeLookupRequest%20USERID="930TEST01558"><Address%20ID="1"><Address1>'+billing_street1+'</Address1><Address2>'+billing_street2+'</Address2><City>'+billing_city+'</City>%20<State>'+OpportunityDetailsList.get(0).BillingState+'</State><Zip5>'+OpportunityDetailsList.get(0).BillingPostalCode+'</Zip5><Zip4></Zip4></Address></ZipCodeLookupRequest>';
+            system.debug('<===>endpointURL1'+ endpointURL1);
+            req1.setEndpoint(endpointURL1);
+            req1.setMethod('POST');
+            req1.setHeader('Content-Type','application/x-www-form-urlencoded');
+            
+            try{
+                 HTTPResponse res1 = http.send(req1);
+                responseFromUSPS1 = res1.getBody();  
+                system.debug('<------------>responseusps'+ responseFromUSPS1);
+                Dom.Document doc1 = res1.getBodyDocument();
+                system.debug('<------------------>doc' + doc1);
+                DOM.XmlNode xroot=doc1.getRootElement();
+                List<TaxModel1> newaccounts1 = new List<TaxModel1> ();
+
+                
+                dom.XmlNode [] xrec = xroot.getchildelements() ; //Get all Record Elements
+
+                for(Dom.XMLNode child : xrec) //Loop Through Records
+                {
+                 TaxModel1 tax = new TaxModel1 ();
+                
+                  for (dom.XmlNode awr : child.getchildren() ) {
+                        
+                      if (awr.getname() == 'Address2') {
+                          system.debug('Address2' + awr.gettext());
+                          tax.billing_street = awr.gettext();
+                      }
+                      if (awr.getname() == 'City') {
+                          system.debug('City' + awr.gettext());
+                          tax.billing_city = awr.gettext();
+                      }
+                      if (awr.getname() == 'State') {
+                          system.debug('State' + awr.gettext());
+                          tax.billing_state = awr.gettext();
+                      }
+                      if (awr.getname() == 'Zip5') {
+                          system.debug('Zip5' + awr.gettext());
+                          tax.billing_zipCode5 = awr.gettext();
+                      }
+                
+                }
+                newaccounts1.add(tax);
+                }
+                
+                system.debug('<++++++++>newaccounts1' + newaccounts1);          
+                
+                for(TaxModel1 test1: newaccounts1 )
+                {
+                    
+                    billing_tax_val5 = test1.billing_zipCode5;
+                    billing_street_val = test1.billing_street;
+                    billing_city_val = test1.billing_city;
+                    billing_state_val = test1.billing_state;
+                }
+                system.debug('<++++++++>tax_val' + tax_val);
+                
+                for(Dom.XMLNode child1 : xrec) //Loop Through Records
+                {
+                	for (dom.XmlNode awr1 : child1.getchildren() ) {
+                        
+                      if (awr1.getname() == 'Error') {
+                          system.debug('Error' + awr1.gettext());   
+                          Bill_to_Validation = false;
+                          
+                         // List<Account> newopp1 = [Select Bill_Address_Validation__c from Account where Id =: actualId];
+                          
+                         /* if(newopp1.size() > 0 )
+                          {
+                              //TriggerUtil.isFutureUpdate = true;
+                             // newopp1.get(0).Bill_Address_Validation__c = false;
+                              
+                              //update newopp1;
+                          }*/
+                      }
+                	}
+                
+                }
+                
+          }
+              Catch(Exception e){
+                System.debug('e""""""""""""""""""'+e);
+            }
+        }
+        if(actualId.size()>0){
+        
+            List<Account> needToUpdate=[SELECT Id,name,ShippingStreet,
+                                        ShippingCity,ShippingState,ShippingPostalCode FROM Account WHERE Id IN :actualId];
+                                        
+               for(Account dupliProbOppr:needToUpdate){
+                   
+                   mainPayLoad.Client='AvaTaxSample';
+                   mainPayLoad.CompanyCode='SSG';
+                   mainPayLoad.CustomerCode='ABC4335';
+                   //mainPayLoad.DocCode='INV001';
+                   //mainPayLoad.DocDate='2014-01-01';
+                   //mainPayLoad.DocType='SalesOrder';
+                   system.debug('mainPayLoad'+mainPayLoad);
+                   
+                   System.debug('needToUpdate'+needToUpdate);
+                List<Account> opporaddress=[SELECT Id,Tax_Area_Zip_Code__c,ShippingStreet,ShippingState,ShippingCity,ShippingCountry,ShippingPostalCode FROM Account 
+                                                          WHERE Id IN :actualId];
+                
+                if(opporaddress.size()>0){
+                    //RequestAddresses
+                    for(Account tempOpprList:opporaddress){
+                        system.debug('<--------->tax_val'+ tax_val);
+                        RequestAddresses tempSls=new RequestAddresses();
+                        tax_value1 = tax_val5;
+                        tempSls.AddressCode='01';
+                        /*tempSls.Line1=tempOpprList.ShippingStreet;
+                        tempSls.Line2=tempOpprList.ShippingStreet;
+                        tempSls.City=tempOpprList.ShippingCity;
+                        tempSls.region=tempOpprList.ShippingState;
+                        tempSls.Country=tempOpprList.ShippingCountry;*/
+                        tempSls.Line1=null;
+                        tempSls.Line2=null;
+                        tempSls.City=null;
+                        tempSls.region=null;
+                        tempSls.Country=null;
+                        //tempSls.PostalCode=tax_val5 +'-'+tax_val;
+                        if(State == 'TX' || State == 'Texas'){
+                            tempSls.PostalCode = '75028-4085';
+                        }
+                        else{ 
+                        if(tax_val == null)
+                        {
+                            tempSls.PostalCode=tempOpprList.Tax_Area_Zip_Code__c;
+                        }
+                        else
+                        {
+                            tempSls.PostalCode=tax_val5 +'-'+tax_val;
+                        }
+                    }
+                        system.debug('<+++++++>'+tempSls.PostalCode);
+                        opporLineItemsPayload.add(tempSls);
+                            
+                    }                
+                    
+                    mainPayLoad.Addresses=opporLineItemsPayload;
+                }
+                   
+                   List<Account> opporLines=[SELECT Id,Amount__c FROM Account WHERE Id IN :actualId];
+                   if(opporLines.size()>0){
+                    for(Account tempOpprList1:opporLines){
+                        
+                        RequestLines tempSls1=new RequestLines();
+                        
+                        tempSls1.LineNo='01';
+                        tempSls1.DestinationCode='01';
+                        tempSls1.OriginCode='02';
+                        tempSls1.Amount=string.valueOf(tempOpprList1.Amount__c);
+                        
+                        opporLineItemsPayload1.add(tempSls1);
+                            
+                    }                
+                    
+                    mainPayLoad.lines=opporLineItemsPayload1;
+                }
+ 
+                //============= Push data to API.
+              runApi(mainPayLoad,dupliProbOppr.Id);
+                 
+               }                         
+            
+        }
+        
+    }
+    
+   global void finish(Database.BatchableContext bc) {
+         Set<ID> actualId1=new Set<ID>();
+        for(Account temp:data){
+            actualId1.add(temp.ID);
+        }
+        system.debug('<------>finish'+ actualId1);
+        Set<ID> actualId=new Set<ID>();
+           Set<ID> accountId=new Set<ID>();
+          
+           List<Combined_Tax_Pusher__c> syncStat=[SELECT Id,Account_Id__c,Bill_To_City__c,Bill_To_State__c,Bill_To_Street__c,Bill_To_Street_2__c,Bill_To_Zip_Code__c,Tax_Code__c,Delivery_City__c,Delivery_State__c,Delivery_Street__c,Tax_Area_Zip_Code__c,Combined_Tax_Rate__c from Combined_Tax_Pusher__c where Account_Id__c=:actualId1];
+            system.debug('<------>finish' + syncStat);
+            system.debug('<------>finish');
+            
+              if(syncStat.size()>0){
+                  system.debug('<------>Check into values'+ tax_val5 + '<------>Check into values' + tax_val);
+                  //if(tax_value1 != null && tax_val != null){
+                      system.debug('<------>Check into values');
+                for(Integer i=0;i<syncStat.size();i++){
+                  actualId.add(syncStat.get(i).Account_Id__c);
+                 
+                }
+                  List<Account> opprToUpdate=[SELECT Id,Tax_Rate__c,Tax_Exempt__c,Tax_Area_Zip_Code__c,BillingCity,BillingStreet,Ship_Address_Validation__c,BillingState,BillingPostalCode,BillingCountry,ShippingStreet,ShippingCity,ShippingState,ShippingCountry,ShippingPostalCode FROM Account WHERE Id IN :actualId];
+                    TriggerUtil.isFutureUpdate = true;
+                  if(tax_val != null){
+                      if(opprToUpdate.get(0).Tax_Exempt__c == True){
+                        opprToUpdate.get(0).Tax_Area_Zip_Code__c=syncStat.get(0).Tax_Area_Zip_Code__c;
+                        opprToUpdate.get(0).ShippingStreet=syncStat.get(0).Delivery_Street__c;
+                        opprToUpdate.get(0).ShippingCity=syncStat.get(0).Delivery_City__c;
+                        opprToUpdate.get(0).ShippingState=syncStat.get(0).Delivery_State__c;
+                        opprToUpdate.get(0).ShippingPostalCode=syncStat.get(0).Tax_Code__c;
+                        opprToUpdate.get(0).Tax_Rate__c = 0.0000;
+                          if(Bill_to_Validation){
+                              opprToUpdate.get(0).BillingState=syncStat.get(0).Bill_To_State__c;
+                              opprToUpdate.get(0).BillingCity=syncStat.get(0).Bill_To_City__c;
+                              opprToUpdate.get(0).BillingStreet=syncStat.get(0).Bill_To_Street__c;
+                              opprToUpdate.get(0).BillingPostalCode=syncStat.get(0).Bill_To_Zip_Code__c;
+                          }
+                      //	opprToUpdate.get(0).Bill_Address_Validation__c	=  Bill_to_Validation;
+                      	opprToUpdate.get(0).Ship_Address_Validation__c	=  Ship_to_Validation;
+                          
+                        update opprToUpdate;
+                      }
+                     
+                      else
+                      {
+                       
+                        opprToUpdate.get(0).Tax_Area_Zip_Code__c=syncStat.get(0).Tax_Area_Zip_Code__c;
+                        opprToUpdate.get(0).ShippingStreet=syncStat.get(0).Delivery_Street__c;
+                        opprToUpdate.get(0).ShippingCity=syncStat.get(0).Delivery_City__c;
+                        opprToUpdate.get(0).ShippingState=syncStat.get(0).Delivery_State__c;
+                        opprToUpdate.get(0).ShippingPostalCode=syncStat.get(0).Tax_Code__c;
+                        opprToUpdate.get(0).Tax_Rate__c=syncStat.get(0).Combined_Tax_Rate__c;
+                          if(Bill_to_Validation){
+                              opprToUpdate.get(0).BillingState=syncStat.get(0).Bill_To_State__c;
+                              opprToUpdate.get(0).BillingCity=syncStat.get(0).Bill_To_City__c;
+                              opprToUpdate.get(0).BillingStreet=syncStat.get(0).Bill_To_Street__c;
+                              opprToUpdate.get(0).BillingPostalCode=syncStat.get(0).Bill_To_Zip_Code__c;
+                          }
+                      	//opprToUpdate.get(0).Bill_Address_Validation__c	=  Bill_to_Validation;
+                      	opprToUpdate.get(0).Ship_Address_Validation__c	=  Ship_to_Validation;
+                          
+                        update opprToUpdate;
+                      }
+                  }
+                  else
+                  {
+                          opprToUpdate.get(0).Tax_Rate__c=0.0000;
+                        //  opprToUpdate.get(0).Bill_Address_Validation__c	=  Bill_to_Validation;
+                          opprToUpdate.get(0).Ship_Address_Validation__c	=  Ship_to_Validation;
+                      	  update opprToUpdate;
+                  }
+                       
+    }
+        
+       // PageLoad();
+        //PageReference newPage = new PageReference('https://www.google.co.in/');
+
+       //newPage.setRedirect(true);
+        
+    }
+ 
+   global void runApi(RequestJson tempPayload,Id needToUpdate){
+        system.debug('*---test--*'+tempPayload);
+        system.debug('***tempPayload****'+tempPayload);
+            String responseFromNet;        
+            String endpointURL ='https://avatax.avalara.net/1.0/tax/get/';
+            String authorizationHeader = 'Basic c2FuZGVlcEBuYXZzb2Z0LmluOk5hdnNvZnQxMjM0QA==';
+            HttpRequest reqData = new HttpRequest();
+            Http http = new Http();
+            reqData.setTimeout(120000);
+            reqData.setHeader('Content-Type', 'application/json');
+            reqData.setHeader('Authorization', 'Basic c2FuZGVlcEBuYXZzb2Z0LmluOk5hdnNvZnQxMjM0QA==');
+            reqData.setEndpoint(endpointURL);
+            reqData.setMethod('POST');
+            system.debug('/*****tempPayload******/'+JSON.serialize(tempPayload));
+            reqData.setBody(JSON.serialize(tempPayload));
+
+          temp.Error_Desciption__c ='Payload : '+JSON.serialize(tempPayload);
+          temp.Class_Name__c  ='avalaraintegration_Controller_Account';
+        
+              try {
+                    HTTPResponse res = http.send(reqData);
+                    responseFromNet = res.getBody();
+                  
+                    temp.Error_Desciption__c=temp.Error_Desciption__c+' :: responseFromNet : '+responseFromNet;
+                    system.debug('---Response---'+responseFromNet);
+                    parseData(responseFromNet,needToUpdate);
+                    
+                 }catch(Exception exp){
+                    
+                    temp.Error_Desciption__c =temp.Error_Desciption__c+'Tax Error : '+exp.getMessage();
+                   
+                   if(Test.isRunningTest()){
+                String responseStr='{"DocCode": "INV001","DocDate": "2014-01-01","Timestamp": "2017-11-24T09:51:28.1575126Z","TotalAmount": "76.5","TotalDiscount": "0","TotalExemption": "0","TotalTaxable": "76.5","TotalTax": "6.89","TotalTaxCalculated": "6.89","TaxDate": "2014-01-01","TaxLines": [{"LineNo": "01","TaxCode": "P0000000","Taxability": "true","BoundaryLevel": "Address","Taxable": "76.5","Rate": "0.090000","Tax": "6.89","Discount": "0","TaxCalculated": "6.89","Exemption": "0","TaxDetails":[{"Taxable": "76.5","Rate": "0.065000","Tax": "4.97","Region": "CA","Country": "US","JurisType": "State","JurisName": "CALIFORNIA","JurisCode": "06","TaxName": "CA STATE TAX"},{"Country": "US","Region": "CA","JurisType": "County","JurisCode": "037","Taxable": "76.5","Rate": "0.010000","Tax": "0.77","JurisName": "LOS ANGELES","TaxName": "CA COUNTY TAX"},{"Country": "US","Region": "CA","JurisType": "Special","JurisCode": "358339","Taxable": "76.5","Rate": "0.015000","Tax": "1.15","JurisName": "LOS ANGELES COUNTY TRANSPORTATION COMMISSION (LATC)","TaxName": "CA SPECIAL TAX"}]}],"TaxAddresses": [{"Address": "13707 Marquardt Ave","AddressCode": "01","City": "Santa Fe Springs","Country": "US","PostalCode": "90670","Region": "CA","TaxRegionId": "2113365","JurisCode": "0603700000","Latitude": "33.906812","Longitude": "-118.038014"}],"ResultCode": "Success"}';
+                parseData(responseStr,needToUpdate);
+                       system.debug('test parse'+responseStr);
+                }
+                    
+                }  
+    }
+   public void parseData(final String responseData,final Id needToUpdate){
+ system.debug('<><><>tax_val'+ tax_val);
+           system.debug('<><><>tax_val5'+ tax_val5);
+        JSONParser parser = JSON.createParser(responseData);
+           system.debug('JSONParser-----'+ responseData);
+        String grandTotal = '';
+        while (parser.nextToken() != null) {
+            if ((parser.getCurrentToken() == JSONToken.FIELD_NAME) &&
+                (parser.getText() == 'Rate')) {
+                parser.nextToken();
+                grandTotal += parser.getText();
+                    break;
+            }
+        }
+           system.debug('JSONParser-----'+ grandTotal);
+           tax_value = decimal.valueOf(grandTotal);
+          // if(grandTotal != null && grandTotal != ''){
+           Combined_Tax_Pusher__c msinfoOne=null;
+           List<Combined_Tax_Pusher__c> tempSO = [select Account_Id__c,Bill_To_City__c,Bill_To_State__c,Bill_To_Street__c,Bill_To_Street_2__c,Bill_To_Zip_Code__c,Tax_Code__c,Delivery_Street__c,Delivery_City__c,Delivery_State__c,Tax_Area_Zip_Code__c,Combined_Tax_Rate__c from Combined_Tax_Pusher__c where Account_Id__c=:needToUpdate];
+                if(tempSO.size()>0){
+                    if(tax_value != null){
+                        system.debug('<====>streetval');                        
+                        String output = '';
+                        String output1 = '';
+                        if(delivery_street_val !=null && delivery_street_val!='')
+                        {
+                            String Street=delivery_street_val;
+                            Street = Street.substring(0,1).toUpperCase() + Street.substring(1).toLowerCase();                            
+                            if(Street !=null && Street!=''){
+                               Matcher m = Pattern.compile('(\\w+|\\W+)').matcher(Street);
+                               while (m.find()) output += m.group().capitalize();
+                                 System.debug('/*/**/*'+output);
+                            }
+                        }
+                        else
+                        {
+                            output = delivery_street_val;
+                        }                       
+                        if(delivery_city_val !=null && delivery_city_val!='')
+                        {                        
+                            String City=delivery_city_val;
+                            City = City.substring(0,1).toUpperCase() + City.substring(1).toLowerCase();
+                            if(City !=null && City!=''){
+                               Matcher m = Pattern.compile('(\\w+|\\W+)').matcher(City);
+                               while (m.find()) output1 += m.group().capitalize();
+                                 System.debug('/*/**/*'+output1);
+            
+                            }
+                        }
+                        else
+                        {
+                            output1 = delivery_city_val;
+                        }
+
+            /////// BILLING
+            String bill_output = '';
+            String bill_output1 = '';
+                        
+                if(billing_street_val !=null && billing_street_val!='')
+                {
+                        String bill_Street=billing_street_val;
+                    
+                        
+                        bill_Street = bill_Street.substring(0,1).toUpperCase() + bill_Street.substring(1).toLowerCase();
+                        
+
+                        if(bill_Street !=null && bill_Street!=''){
+                           Matcher m = Pattern.compile('(\\w+|\\W+)').matcher(bill_Street);
+                           while (m.find()) bill_output += m.group().capitalize();
+                             System.debug('/*/**/*'+bill_output);
+            
+                        }
+                }
+                else
+                {
+                    bill_output = billing_street_val;
+                }
+                        
+                 if(billing_city_val !=null && billing_city_val!='')
+                {       
+                         String bill_city=billing_city_val;
+                        bill_city = bill_city.substring(0,1).toUpperCase() + bill_city.substring(1).toLowerCase();
+                        if(bill_city !=null && bill_city!=''){
+                           Matcher m = Pattern.compile('(\\w+|\\W+)').matcher(bill_city);
+                           while (m.find()) bill_output1 += m.group().capitalize();
+                             System.debug('/*/**/*'+bill_output1);
+            
+                        }
+                }
+                else
+                {
+                      bill_output1 = billing_city_val;
+                }               
+                    msinfoOne=tempSO.get(0);                
+                    msinfoOne.Account_Id__c=needToUpdate;
+                   // msinfoOne.Tax_Area_Zip_Code__c= tax_val5+'-'+tax_val;
+                    msinfoOne.Combined_Tax_Rate__c=decimal.valueOf(grandTotal);
+                    msinfoOne.Delivery_Street__c=output;
+                    msinfoOne.Delivery_City__c=output1;
+                    msinfoOne.Delivery_State__c=delivery_state_val;
+                        if(delivery_state_val == 'TX' || delivery_state_val == 'Texas'){
+                      		msinfoOne.Tax_Area_Zip_Code__c= '75028-4085';
+                  		}else{
+                      		msinfoOne.Tax_Area_Zip_Code__c= tax_val5+'-'+tax_val;
+                  		}
+                    msinfoOne.Tax_Code__c=tax_val5;                        
+                    msinfoOne.Bill_To_Zip_Code__c=billing_tax_val5;                  
+                    msinfoOne.Bill_To_Street__c=bill_output;
+                    msinfoOne.Bill_To_State__c=billing_state_val;
+                    msinfoOne.Bill_To_City__c=bill_output1;              
+                       if(msinfoOne.Id!=null){                               
+                            System.debug('msinfoOne for Update::::::::::::::'+msinfoOne);
+                            update msinfoOne;
+                       }
+                    }
+                }
+           else
+              {
+                  system.debug('<+++++>test');
+                  String out = '';
+                  String out1 = '';
+                  if(delivery_street_val !=null && delivery_street_val!=''){
+                     String Street1=delivery_street_val;
+                     Street1 = Street1.substring(0,1).toUpperCase() + Street1.substring(1).toLowerCase();
+                     
+                        if(Street1 !=null && Street1!=''){
+                            Matcher m = Pattern.compile('(\\w+|\\W+)').matcher(Street1);
+                            while (m.find()) out += m.group().capitalize();
+                             System.debug('/*/**/*'+out);            
+                        }
+                  }
+                  else
+                  {
+                      out = delivery_street_val;
+                  }                      
+                  if(delivery_city_val !=null && delivery_city_val!=''){
+                  String City1=delivery_city_val;
+                  City1 = City1.substring(0,1).toUpperCase() + City1.substring(1).toLowerCase();
+                        if(City1 !=null && City1!=''){
+                            Matcher m = Pattern.compile('(\\w+|\\W+)').matcher(City1);
+                            while (m.find()) out1 += m.group().capitalize();
+                             System.debug('/*/**/*'+out1);            
+                        }
+                  }
+                  else
+                  {
+                      out1 = delivery_city_val;
+                  }
+                  String bill_output = '';
+                  String bill_output1 = '';
+                  if(billing_street_val !=null && billing_street_val!=''){
+                     String bill_Street=billing_street_val;
+                        bill_Street = bill_Street.substring(0,1).toUpperCase() + bill_Street.substring(1).toLowerCase();
+                        if(bill_Street !=null && bill_Street!=''){
+                            Matcher m = Pattern.compile('(\\w+|\\W+)').matcher(bill_Street);
+                            while (m.find()) bill_output += m.group().capitalize();
+                             System.debug('/*/**/*'+bill_output);                    
+                        }
+                  }
+                  else
+                  {
+                      bill_output = billing_street_val;
+                  }
+                  if(billing_city_val !=null && billing_city_val!=''){
+                  String bill_city=billing_city_val;
+                  bill_city = bill_city.substring(0,1).toUpperCase() + bill_city.substring(1).toLowerCase();
+                        if(bill_city !=null && bill_city!=''){
+                            Matcher m = Pattern.compile('(\\w+|\\W+)').matcher(bill_city);
+                            while (m.find()) bill_output1 += m.group().capitalize();
+                             System.debug('/*/**/*'+bill_output1);
+                        }
+                  }
+                  else
+                  {
+                      bill_output1 = billing_city_val;
+                  }                  
+                  system.debug('<---->Insert tax');
+                    Combined_Tax_Pusher__c taxobj = new Combined_Tax_Pusher__c();
+                    taxobj.Account_Id__c= needToUpdate;
+                    //taxobj.Tax_Area_Zip_Code__c= tax_val5+'-'+tax_val;
+                    taxobj.Combined_Tax_Rate__c=decimal.valueOf(grandTotal);
+                    taxobj.Delivery_Street__c = out;
+                    taxobj.Delivery_City__c = out1;
+                    taxobj.Delivery_State__c= delivery_state_val;
+                    taxobj.Tax_Code__c= tax_val5;
+                  	if(delivery_state_val == 'TX' || delivery_state_val == 'Texas'){
+                      taxobj.Tax_Area_Zip_Code__c= '75028-4085';
+                  }else{
+                      taxobj.Tax_Area_Zip_Code__c= tax_val5+'-'+tax_val;
+                  }
+                  
+                    taxobj.Bill_To_Zip_Code__c=billing_tax_val5;
+                   
+                    taxobj.Bill_To_Street__c=bill_output;
+                    taxobj.Bill_To_State__c=billing_state_val;
+                    taxobj.Bill_To_City__c=bill_output1;
+                  system.debug('<=====>taxobj'+taxobj);
+                    insert taxobj;
+              }
+          // }
+           
+        system.debug('Grand total=' + grandTotal);
+           system.debug('needToUpdate-----' + needToUpdate);
+           
+    }
+    
+}

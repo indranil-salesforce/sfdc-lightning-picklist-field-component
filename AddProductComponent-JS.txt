@@ -1,0 +1,150 @@
+({
+	doInit : function(component, event, helper) {
+		helper.initProducts(component);
+	},
+    
+    searchKeyChange: function(component, event) {
+        var searchKey = event.getParam("searchKey");
+        var action = component.get("c.getSearchedProducts");
+        //var action = component.get("c.getSearchedProductsQuery");
+        action.setParams({
+          "searchKey": searchKey,
+          "recordId": component.get("v.recordId")
+        });
+        action.setCallback(this, function(a) {
+            component.set("v.allProducts", a.getReturnValue());
+            //confirm("Callback Status : "+a.getReturnValue());
+            
+        });
+        $A.enqueueAction(action);
+    },
+
+    addLineItem: function(component, event) {
+        var searchKey = event.getParam("lineItem");
+        var action = component.get("c.addLineItems");
+        action.setParams({
+          "pbookItem": searchKey,
+          "runningData": JSON.stringify(component.get("v.lineItems")),
+          "opportunityID":component.get("v.recordId")
+        });
+      
+        action.setCallback(this, function(a) {
+            var state = a.getState();
+            if(state === 'SUCCESS'){
+                component.set("v.lineItems", a.getReturnValue());
+                
+                if(a.getReturnValue().length>0){
+                   component.set("v.alreadyHaveLine", true);
+                }else{
+                    component.set("v.alreadyHaveLine", false);
+                }
+                
+            	component.set("v.totalContacts", a.getReturnValue().length);
+                
+                //confirm("Callback failed....! Record ID : "+component.get("v.recordId")+" Data : "+JSON.stringify(a.getReturnValue()));
+                
+            }
+        });
+        
+        $A.enqueueAction(action);
+    },
+    
+    removeLineItem: function(component, event) {
+        var searchKey = event.getParam("opprLineItemsEvent");
+        var action = component.get("c.removeLineItems");
+        action.setParams({
+          "runningData": JSON.stringify(component.get("v.lineItems")),
+          "deletingOBJ": JSON.stringify(searchKey)
+        });
+        
+        
+        //confirm("Callback removeLineItem Success....!"+JSON.stringify(component.get("v.lineItems")));
+        //confirm("Callback removeLineItem Success....!"+JSON.stringify(searchKey));
+      
+        action.setCallback(this, function(a) {
+            var state = a.getState();
+            
+            if(state === 'SUCCESS'){
+                
+                if(a.getReturnValue().length>0){
+                   component.set("v.alreadyHaveLine", true);
+                }else{
+                   component.set("v.alreadyHaveLine", false);
+                }
+                
+                component.set("v.lineItems", a.getReturnValue());
+            	component.set("v.totalContacts", a.getReturnValue().length);
+                
+                
+            	//confirm("Callback removeLineItem Success....!"+a.getReturnValue()+" Data : "+JSON.stringify(searchKey));
+            }else{
+                //confirm("Callback removeLineItem failed....!"+a.getReturnValue()+" Data : "+JSON.stringify(searchKey));
+            }
+        });
+        
+        
+        
+         //==========Line Items.
+        var actionLineItemsBlockd = component.get("c.getInactiveProducts");
+        actionLineItemsBlockd.setParams({
+            "recordId": component.get("v.recordId")
+        });
+        
+        actionLineItemsBlockd.setCallback(this, function(response) {
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                component.set("v.totalInactive", response.getReturnValue());
+            }
+            
+        });
+        
+        
+        
+        $A.enqueueAction(action);
+        $A.enqueueAction(actionLineItemsBlockd);
+
+        
+    },
+    
+     saveLineItem: function(component, event) {
+        var searchKey = event.getParam("opprLineItemsEvent");
+        // alert(JSON.stringify(component.get("v.lineItems")));
+        var action = component.get("c.saveLineItems");
+        action.setParams({
+          "runningData": JSON.stringify(component.get("v.lineItems")),
+          "opportunityID":component.get("v.recordId")
+        });
+         
+        //component.set("v.totalContacts", JSON.stringify(component.get("v.lineItems")));
+      
+         //confirm("Callback removeLineItem Success....! Record : "+component.get("v.recordId")+" Data : "+JSON.stringify(component.get("v.lineItems")));
+         
+        action.setCallback(this, function(a) {
+            var state = a.getState();
+            
+            if(state === 'SUCCESS'){
+            	//confirm("Line Items Saved Status : "+a.getReturnValue());
+            	$A.get("e.force:closeQuickAction").fire();
+            }else{
+                confirm("Failed...!"+a.getReturnValue()+" Cause : "+a.getReturnValue());
+            }
+            
+            var urlEvent = $A.get("e.force:navigateToURL");
+            urlEvent.setParams({
+                  "url": "#/sObject/"+component.get("v.recordId")+"/view"
+                });
+            urlEvent.fire();
+            
+            //window.open("#/sObject/"+component.get("v.recordId")+"/view","_self")
+            
+            
+          });
+        
+        $A.enqueueAction(action);
+    },
+    
+    
+    testEvent : function(cmp, event) {
+        confirm("Working on....");
+    }
+})

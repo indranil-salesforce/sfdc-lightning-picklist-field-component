@@ -1,0 +1,31 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+	
+   <aura:attribute name="lineItemsMain" type="OpportunityLineItem"/>
+
+    <tr>
+        <th scope="row">
+            <div class="slds-p-vertical_x-small">
+                <a href="{!'#/sObject/'+v.lineItemsMain.Id+'/view'}">{!v.lineItemsMain.Product_Name__c}</a>
+            </div>
+        </th>
+        <td>
+            <span class="uiOutputText slds-p-vertical_x-small" title="{!v.lineItemsMain.Product_Description_New__c}">
+                {!v.lineItemsMain.Product_Description_New__c}
+            </span>
+        </td>
+        <td>
+            <span class="uiOutputNumber slds-p-vertical_x-small" >{!v.lineItemsMain.Quantity}</span>
+        </td>
+        <td> 
+            <ui:outputCurrency class="forceOutputCurrency slds-p-vertical_x-small" value="{!v.lineItemsMain.UnitPrice}" currencyCode="{!v.lineItemsMain.CurrencyIsoCode+' '}"/>
+        </td>
+        <td> 
+            <ui:outputCurrency class="forceOutputCurrency slds-p-vertical_x-small" value="{!v.lineItemsMain.TotalPrice}" currencyCode="{!v.lineItemsMain.CurrencyIsoCode+' '}"/>
+        </td>
+        <td>
+            
+        </td>
+    </tr>
+    
+    
+</aura:component>

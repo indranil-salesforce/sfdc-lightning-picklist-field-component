@@ -1,0 +1,148 @@
+<aura:component controller="AddProductController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+	<style>
+        .slds-table_bordered{ border-top: 0px;}
+        .slds-table_bordered, .slds-table--bordered{ border-top: 0px; margin-top:25px;}
+        
+    </style>
+    <aura:attribute name="recordId" type="Id" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+	<aura:handler event="c:SearchKeyChangeEvent" action="{!c.searchKeyChange}"/>
+    <aura:handler event="c:AddLineItemEvent" action="{!c.addLineItem}"/>
+    <aura:handler event="c:LineItemsEvent" action="{!c.removeLineItem}"/>
+    
+    
+    <aura:attribute name="lineItems" type="OpportunityLineItem[]"/>
+    <aura:attribute name="allProducts" type="PricebookEntry[]"/>
+    <aura:attribute name="totalContacts" type="String"/>
+    <aura:attribute name="totalInactive" type="String"/>
+    <aura:attribute name="alreadyHaveLine" type="Boolean" default="false"/>
+    
+    
+    
+    <article class="slds-card">
+      <div class="slds-card__header slds-grid">
+        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+          <div class="slds-media__body">
+            <h2>
+              <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="[object Object]">
+                <span class="slds-text-heading_small">{!v.totalContacts} Product(s) added</span>
+              </a>
+            </h2>
+          </div>
+        </header>
+      </div>
+      <div class="slds-card__body">
+        <table class="slds-table slds-table_bordered slds-no-row-hover slds-table_cell-buffer" style="width : 100%">
+          <thead>
+            <tr class="slds-text-title_caps">
+              <th scope="col">
+                <div class="slds-truncate" title="Name">Added Line Items</div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+              <div class="opportunitytable">
+					<table cellpadding="0" cellspacing="0">
+						<tr>	
+							<th align="center" style="padding: 15px 15px 5px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 16px;color: #213965;font-weight: bold;
+    border-top: 0px;"></th>
+							<th align="left" style="padding: 15px 15px 5px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 16px;color: #213965;font-weight: bold;
+    border-top: 0px;">Item No.</th>
+							<th align="left" style="padding: 15px 15px 5px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 16px;color: #213965;font-weight: bold;
+    border-top: 0px;">Description</th>
+							<th align="center" style="padding: 15px 15px 5px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 16px;color: #213965;font-weight: bold;
+    border-top: 0px;">Quantity</th>
+							<th align="right" style="padding: 15px 15px 5px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 16px;color: #213965;font-weight: bold;
+    border-top: 0px;">Unit Price</th>
+                       <!-- ****** -->
+                          <!--  <th align="left" style="padding: 15px 15px 5px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 16px;color: #213965;font-weight: bold;
+    border-top: 0px;">Standard Price</th>
+                            <th align="left" style="padding: 15px 15px 5px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 16px;color: #213965;font-weight: bold;
+    border-top: 0px;">Silver Price</th>
+                            <th align="left" style="padding: 15px 15px 5px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 16px;color: #213965;font-weight: bold;
+    border-top: 0px;">Gold Price</th>
+                            <th align="left" style="padding: 15px 15px 5px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 16px;color: #213965;font-weight: bold;
+    border-top: 0px;">Platinum Price</th>-->
+                            <!-- ******* -->
+                         <!--   <th align="center" style="padding: 15px 15px 5px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 16px;color: #213965;font-weight: bold;
+    border-top: 0px;">Locatioan Code</th>-->
+							<th align="left" style="padding: 15px 15px 5px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 16px;color: #213965;font-weight: bold;
+    border-top: 0px;">Add Notes</th>
+                            <th align="left" style="padding: 15px 15px 5px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 16px;color: #213965;font-weight: bold;
+    border-top: 0px;">Sort Order</th>
+							<th align="center" style="padding: 15px 15px 5px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 16px;color: #213965;font-weight: bold;
+    border-top: 0px;"></th>
+						</tr>
+             <aura:iteration var="items" items="{!v.lineItems}">
+                <c:LineItemsRow lineItems="{!items}"/>
+             </aura:iteration>
+                  </table>
+              </div>
+          </tbody>
+        </table>
+      </div>
+        
+         <footer class="slds-card__footer">
+            <span class="slds-badge slds-m-left--medium slds-shrink-none slds-align-middle site-badge--not-compatible" style="background:#B71C1C; color: #fff; margin:0px 30px 0px 0px;" data-reactid="191">{!v.totalInactive}</span>
+            <ui:button label="Save Line Items" class="slds-button_brand" press="{!c.saveLineItem}"/>
+        </footer>
+        
+	</article>
+    
+    
+    <article class="slds-card">
+      <div class="slds-card__header slds-grid">
+        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+          <div class="slds-media__body">
+            <h2>
+              <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="[object Object]">
+                <span class="slds-text-heading_small">Available Products</span>
+              </a>
+            </h2>
+              <div>
+                <c:SearchComponent />
+           </div>
+          </div>
+        </header>
+      </div>
+      <div class="slds-card__body">
+		 <table class="slds-table slds-table_bordered slds-no-row-hover slds-table_cell-buffer opportunitytable" style="width : 100%">
+          <thead>
+            <tr class="slds-text-title_caps">
+							<th class=" " scope="col" style=" font-weight: bold; color: #213965; border-bottom: #213965 1px solid;" title="Item No:">Item No
+                                <span class="assistiveText slds-p-vertical_small"></span>
+                            </th>
+							<th class=" " scope="col" style="font-weight: bold; color: #213965; border-bottom: #213965 1px solid;" title=" Product Code">Product Code
+                                <span class="assistiveText slds-p-vertical_small"></span>
+                            </th>
+                            <th class="initialSortAsc " scope="col" style="font-weight: bold; color: #213965; border-bottom: #213965 1px solid;" title="Description">Description
+                                <span class="assistiveText slds-p-vertical_small"></span>
+                            </th>
+                			<th class="initialSortAsc descending" scope="col" style="font-weight: bold; color: #213965; border-bottom: #213965 1px solid;" title="Unit Price">Retail Price
+                                <span class="assistiveText"></span>
+                            </th>
+                			<th class="initialSortAsc descending" scope="col" style="font-weight: bold; color: #213965; border-bottom: #213965 1px solid;" title="Unit Price">Silver Price
+                                <span class="assistiveText"></span>
+                            </th>
+                			<th class="initialSortAsc descending" scope="col" style="font-weight: bold; color: #213965; border-bottom: #213965 1px solid;" title="Unit Price">Gold Price
+                                <span class="assistiveText"></span>
+                            </th>
+                			<th class="initialSortAsc descending" scope="col" style="font-weight: bold; color: #213965; border-bottom: #213965 1px solid;" title="Unit Price">Platinum Price
+                                <span class="assistiveText"></span>
+                            </th>
+                            <th class="actionColumnHeader " scope="col" style=" border-bottom: #213965 1px solid;">
+                                <span class="assistiveText slds-p-vertical_small">Action</span>
+                            </th>
+            </tr>
+          </thead>
+          <tbody>
+             <aura:iteration var="items" items="{!v.allProducts}">
+                   <c:ProductRow product="{!items}"/>
+                </aura:iteration>
+          </tbody>
+        </table>
+      </div>
+	</article>  
+</aura:component>

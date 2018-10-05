@@ -1,0 +1,185 @@
+({
+	doInit : function(component, event, helper) {
+		var actionOppor = component.get("c.getOpportunity");
+        actionOppor.setParams({
+            "opportuID": component.get("v.recordId")
+        });
+        
+        //confirm(JSON.stringify(component.get("v.recordId")));
+        
+        actionOppor.setCallback(this, function(response) {
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                //confirm(JSON.stringify(response.getReturnValue()));
+                component.set("v.oppor", response.getReturnValue());
+            }
+            
+        });
+        
+        
+        var closePicklist = component.get("c.getClosePickValues");
+        
+        closePicklist.setCallback(this, function(response) {
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                component.set("v.closeReason", response.getReturnValue());
+            }
+            
+        });
+        
+        
+        var closeStagePicklist = component.get("c.getCloseStagePickValues");
+        
+        closeStagePicklist.setCallback(this, function(response) {
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                //confirm(JSON.stringify(response.getReturnValue()));
+                component.set("v.closeStages", response.getReturnValue());
+            }
+            
+        });
+        
+        
+        $A.enqueueAction(actionOppor);
+        $A.enqueueAction(closePicklist);
+        $A.enqueueAction(closeStagePicklist);
+	},
+    
+    updateOpportu : function(component, event, helper) {
+        
+        var actionOppor = component.get("c.updateOpportunity");
+        actionOppor.setParams({
+            "opportuID": component.get("v.recordId"),
+            "closelostReason": component.find("levels").get("v.value"),
+            "closeStage": component.find("closeStage").get("v.value"),
+            "opportunityDta": JSON.stringify(component.get("v.oppor"))
+        });
+        //component.set("v.errorMessage", JSON.stringify(component.get("v.oppor")));
+        //confirm(component.find("closeStage").get("v.value"));
+        
+        actionOppor.setCallback(this, function(response) {
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                //confirm(response.getReturnValue());
+               
+                //component.set("v.errorMessage", JSON.stringify(component.get("v.oppor"));
+                
+                if(response.getReturnValue()=="Success"){
+                    $A.get("e.force:closeQuickAction").fire();
+                    
+                    var urlEvent = $A.get("e.force:navigateToURL");
+                    urlEvent.setParams({
+                      "url": "#/sObject/"+component.get("v.recordId")+"/view"
+                    });
+                    urlEvent.fire();
+                    
+                }else{
+                    component.set("v.errorMessage", response.getReturnValue());
+                }
+            }
+        });
+        
+        $A.enqueueAction(actionOppor);
+        
+    },
+    
+    changeReason: function(component, event, helper) {
+        
+        if(component.find("levels").get("v.value")=="Price Too High"){
+        	var cmpTarget=component.find('pricebox');
+            $A.util.removeClass(cmpTarget, 'toggle');
+        }else{
+            var cmpTarget=component.find('pricebox');
+            $A.util.addClass(cmpTarget, 'toggle');
+            
+        }
+    
+	},
+   /*
+    changeReseller: function(component, event, helper) {
+        
+        if(component.find("closeStage").get("v.value")=="Closed Reseller"){
+            alert("Closed Reseller");
+        	var cmpTarget1=component.find('resellerbox');
+            $A.util.removeClass(cmpTarget1, 'toggle');
+        }else{
+            var cmpTarget1=component.find('resellerbox');
+            $A.util.addClass(cmpTarget1, 'toggle');
+            
+        }
+    
+	},*/
+    changeReseller: function(component, event, helper) {
+        
+        if(component.find("closeStage").get("v.value")=="Closed Lost"){
+            //alert("Closed Lost");
+        	var cmpTarget=component.find('CloseReasonDiv');
+            $A.util.removeClass(cmpTarget, 'toggle');
+            
+            var cmpTarget1=component.find('pricebox');
+            $A.util.removeClass(cmpTarget1, 'toggle');
+            
+            var cmpTarget2=component.find('resellerbox');
+            $A.util.addClass(cmpTarget2, 'toggle');
+        }
+        else if(component.find("closeStage").get("v.value")=="Customer Not Purchasing")
+        {
+            //alert("Customer Not Purchasing");
+        	var cmpTarget=component.find('CloseReasonDiv');
+            $A.util.removeClass(cmpTarget, 'toggle');
+            
+            var cmpTarget1=component.find('pricebox');
+            $A.util.removeClass(cmpTarget1, 'toggle');
+            
+            var cmpTarget2=component.find('resellerbox');
+            $A.util.addClass(cmpTarget2, 'toggle');
+        }
+        else if(component.find("closeStage").get("v.value")=="Closed Rental")
+        {
+            //alert("Closed Rental");
+            
+        	var cmpTarget1=component.find('CloseReasonDiv');
+            $A.util.addClass(cmpTarget1, 'toggle');
+            
+            var cmpTarget2=component.find('pricebox');
+            $A.util.addClass(cmpTarget2, 'toggle');
+            
+            var cmpTarget3=component.find('resellerbox');
+            $A.util.addClass(cmpTarget3, 'toggle');
+            
+            
+        }
+        else if(component.find("closeStage").get("v.value")=="Closed Reseller")
+        {
+            //alert("Closed Reseller");
+            
+            var cmpTarget=component.find('resellerbox');
+            $A.util.removeClass(cmpTarget, 'toggle');
+            
+            var cmpTarget1=component.find('CloseReasonDiv');
+            $A.util.addClass(cmpTarget1, 'toggle');
+            
+            var cmpTarget2=component.find('pricebox');
+            $A.util.addClass(cmpTarget2, 'toggle');
+        }
+        else if(component.find("closeStage").get("v.value")=="Closed Nothing to Offer")
+        {
+            //alert("Closed Nothing to Offer");
+            
+            var cmpTarget1=component.find('CloseReasonDiv');
+            $A.util.addClass(cmpTarget1, 'toggle');
+            
+            var cmpTarget2=component.find('pricebox');
+            $A.util.addClass(cmpTarget2, 'toggle');
+            
+            var cmpTarget3=component.find('resellerbox');
+            $A.util.addClass(cmpTarget3, 'toggle');
+        }
+        else{
+            //var cmpTarget1=component.find('CloseReasonDiv');
+            //$A.util.addClass(cmpTarget1, 'toggle');
+        }
+    
+	}
+    
+})

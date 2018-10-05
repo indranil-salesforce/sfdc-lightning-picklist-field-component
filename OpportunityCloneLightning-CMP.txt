@@ -1,0 +1,150 @@
+<aura:component controller="OpportunityCloneController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" >
+	<style>
+    .slds-modal__container {
+        width: 74% !important;
+        max-width: 74%;
+        min-width: 74%;
+        }
+    </style>
+    <aura:attribute name="recordId" type="Id" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:attribute name="opportunity" type="Opportunity" description="Blank variable for saving a Opportunity" />
+	<aura:attribute name="locationCode" type="String[]"/>
+    <aura:attribute name="lineItems" type="OpportunityLineItem[]"/>
+    <aura:attribute name="today" type="Date" default=""/>
+    
+    <aura:handler event="c:LineItemsEvent" action="{!c.removeLineItem}"/>
+    
+
+    <header class="slds-modal__header">
+        <h2 id="id-of-modalheader-h2" class="slds-text-heading_medium">Clone Opportunity</h2>
+       <!-- <p class="slds-m-top_x-small">Pricebook: Standard Price Book</p>-->
+    </header>
+    
+    <ui:spinner aura:id="cloneSpinner" isVisible="true"/>
+    
+        <fieldset class="slds-form--compound slds-p-top_xx-small">
+           
+          <div class="slds-form-element__group">
+            <div class="slds-form-element__row">
+              <div class="slds-form-element slds-size--1-of-2">
+                <ui:inputText class="slds-input" placeholder="Opportunity Name" value="{!v.opportunity.Name}" 
+                label="Opportunity Name" labelClass="slds-form-element__label" required="true"></ui:inputText>
+              </div>
+              <div class="slds-form-element slds-size--1-of-2">
+                 <ui:inputDate aura:id="closedate" format="MM-dd-yyyy"  
+                 displayDatePicker="true" class="slds-input" label="Close Date" 
+                 labelClass="slds-form-element__label" value="{!v.opportunity.closedate}" required="true"></ui:inputDate>
+              </div>
+            </div>
+            
+            <div class="slds-form-element__row">
+              <div class="slds-form-element slds-size--1-of-2">
+                  <label class="slds-form-element__label" for="input-id-01">Account Name</label>
+                  <div class="slds-truncate" title="{!v.opportunity.Account.Name}">
+                        <a href="{!'#/sObject/'+v.opportunity.AccountId+'/view'}">{!v.opportunity.Account.Name}</a>
+                   </div>
+              </div>
+              <div class="slds-form-element slds-size--1-of-2">
+                  <label class="slds-form-element__label" for="input-id-01">Amount</label>
+                  <div class="slds-truncate" title="{!v.opportunity.Amount}">{!v.opportunity.Amount}</div>
+              </div>
+            </div>
+              
+            <div class="slds-form-element__row">
+              <div class="slds-form-element slds-size--1-of-2">
+                <ui:inputText class="slds-input" placeholder="PO Number" value="{!v.opportunity.PO_Number__c}" 
+                    label="PO Number" labelClass="slds-form-element__label"></ui:inputText>
+              </div>
+              <div class="slds-form-element slds-size--1-of-2">
+                 <ui:inputText class="slds-input" placeholder="Additional Instructions" value="{!v.opportunity.Additional_Instructions__c}" 
+                    label="Additional Instructions" labelClass="slds-form-element__label"></ui:inputText>
+              </div>
+            </div>
+              
+              <div class="slds-form-element__row">
+                  <div class="slds-form-element slds-size--1-of-2">
+                      <label class="slds-form-element__label" for="input-id-01">Delivery Option</label>
+                      <div class="slds-truncate" title="{!v.opportunity.Delivery_Option__c}">{!v.opportunity.Delivery_Option__c}</div>
+                  </div>
+                  <div class="slds-form-element slds-size--1-of-2">
+                     <ui:inputSelect aura:id="levels" label="Location Code" labelClass="slds-form-element__label" 
+                      class="slds-input">
+                        <aura:iteration items="{!v.locationCode}" var="level">
+                             <ui:inputSelectOption text="{!level}" label="{!level}"/>
+                        </aura:iteration>
+                     </ui:inputSelect>
+                  </div>
+            </div>
+              
+              
+              <div class="slds-form-element__row">
+                  <div class="slds-form-element slds-size--1-of-2">
+                    <ui:inputCheckbox class="slds-checkbox" value="{!v.opportunity.Replacement_Order__c}" 
+                                      label="Replacement Order" labelClass="slds-form-element__label"/>
+                  </div>
+                  <div class="slds-form-element slds-size--1-of-2">
+                     <ui:inputCheckbox class="slds-checkbox" value="{!v.opportunity.Probability_Low__c}" 
+                                      label="Probability - Low" labelClass="slds-form-element__label"/>
+                  </div>
+              </div>
+              
+              <div class="slds-form-element__row">
+                  <div class="slds-form-element slds-size--1-of-2">
+                    <ui:inputCheckbox class="slds-checkbox" value="{!v.opportunity.Product_Samples__c}" 
+                                      label="Product Samples" labelClass="slds-form-element__label"/>
+                  </div>
+                  <div class="slds-form-element slds-size--1-of-2">
+                     <ui:inputCheckbox class="slds-checkbox" value="{!v.opportunity.Probability_Medium__c}" 
+                                      label="Probability - Medium" labelClass="slds-form-element__label"/>
+                  </div>
+              </div>
+              
+              <div class="slds-form-element__row">
+                  <div class="slds-form-element slds-size--1-of-2">
+                    
+                  </div>
+                  <div class="slds-form-element slds-size--1-of-2">
+                     <ui:inputCheckbox class="slds-checkbox" value="{!v.opportunity.Probability_High__c}" 
+                                      label="Probability - High" labelClass="slds-form-element__label"/>
+                  </div>
+              </div>
+              
+          </div>
+        </fieldset>
+        
+              <div class="opportunitytable">
+					<table cellpadding="0" cellspacing="0">
+						<tr>	
+							<th align="center" style="padding: 5px 5px 1px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 10px;color: #213965;font-weight: regular;
+    border-top: 0px;"></th>
+							<th align="left" style="padding: 5px 5px 1px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 10px;color: #213965;font-weight: regular;
+    border-top: 0px;">Item No.</th>
+							<th align="left" style="padding: 5px 5px 1px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 10px;color: #213965;font-weight: regular;
+    border-top: 0px;">Description</th>
+							<th align="center" style="padding: 5px 5px 1px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 10px;color: #213965;font-weight: regular;
+    border-top: 0px;">Quantity</th>
+							<th align="center" style="padding: 5px 5px 1px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 10px;color: #213965;font-weight: regular;
+    border-top: 0px;">Unit Price</th>
+							<th align="left" style="padding: 5px 5px 1px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 10px;color: #213965;font-weight: regular;
+    border-top: 0px;">Add Notes</th>
+                            <th align="center" style="padding: 5px 5px 1px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 10px;color: #213965;font-weight: regular;
+    border-top: 0px;">Sort Order</th>
+							<th align="center" style="padding: 5px 5px 1px 6px;margin: 0;border-bottom: #213965 1px solid;font-size: 10px;color: #213965;font-weight: regular;
+    border-top: 0px;"></th>
+						</tr>
+             <aura:iteration var="items" items="{!v.lineItems}">
+                <c:LineItemsRow lineItems="{!items}"/>
+             </aura:iteration>
+                  </table>
+              </div>
+    
+   
+    
+    <div class="slds-p-vertical_small slds-align_absolute-center">
+        <ui:button label="Cancel" press="{!c.closeMe}"/>
+        <ui:button label="Save" class="slds-button_brand" press="{!c.saveAll}"/>
+    </div>
+    
+</aura:component>
